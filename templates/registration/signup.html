@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex justify-center items-center min-h-[60vh]">
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">नयाँ खाता खोल्नुहोस् (Register)</h2>
+        
+        <form method="post">
+            {% csrf_token %}
+            
+            {% for field in form %}
+            <div class="mb-4">
+                <label class="block text-gray-700 text-sm font-bold mb-2">
+                    {{ field.label }}
+                </label>
+                <!-- Basic styling for inputs -->
+                <input 
+                    type="{{ field.field.widget.input_type }}" 
+                    name="{{ field.name }}" 
+                    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    {% if field.help_text %}aria-describedby="{{ field.id_for_label }}_helptext"{% endif %}
+                >
+                {% if field.help_text %}
+                <p class="text-gray-500 text-xs mt-1" id="{{ field.id_for_label }}_helptext">{{ field.help_text|safe }}</p>
+                {% endif %}
+                {% if field.errors %}
+                <div class="text-red-500 text-xs italic mt-1">
+                    {{ field.errors }}
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition mt-4">
+                Sign Up
+            </button>
+        </form>
+
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Already have an account? <a href="{% url 'login' %}" class="text-indigo-600 font-semibold">Login here</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

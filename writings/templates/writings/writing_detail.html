@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10 mb-20">
+    
+    <!-- Back Button -->
+    <a href="{% url 'writing_list' %}" class="inline-flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        गृहपृष्ठ (Home)
+    </a>
+
+    <article class="bg-white p-8 md:p-12 rounded-lg shadow-sm border border-gray-100">
+        <!-- Header -->
+        <header class="mb-8 border-b border-gray-100 pb-8">
+            <div class="flex items-center space-x-2 mb-4">
+                {% if writing.category == 'poem' %}
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded">कविता</span>
+                {% else %}
+                    <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">कथा</span>
+                {% endif %}
+                <span class="text-gray-400 text-sm">•</span>
+                <span class="text-gray-500 text-sm">{{ writing.created_at|date:"F d, Y" }}</span>
+            </div>
+
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+                {{ writing.title }}
+            </h1>
+
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl mr-3">
+                    {{ writing.author.username|first|upper }}
+                </div>
+                <div>
+                    <p class="text-sm font-semibold text-gray-900">
+                        {{ writing.author.get_full_name|default:writing.author.username }}
+                    </p>
+                    <p class="text-xs text-gray-500">Author</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- AI Summary Section (Future Implementation) -->
+        {% if writing.summary %}
+        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r">
+            <div class="flex items-start">
+                <div class="flex-shrink-0">
+                    <!-- Robot Icon -->
+                    <svg class="h-5 w-5 text-indigo-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-indigo-800">AI Summary (सारांश)</h3>
+                    <div class="mt-1 text-sm text-indigo-700">
+                        {{ writing.summary|linebreaks }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Main Content -->
+        <!-- 'linebreaks' filter is essential for preserving poetry stanzas and paragraphs -->
+        <div class="prose prose-lg prose-indigo max-w-none text-gray-800 leading-loose">
+            {{ writing.content|linebreaks }}
+        </div>
+
+    </article>
+
+</div>
+{% endblock %}

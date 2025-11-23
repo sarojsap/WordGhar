@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">नयाँ रचना पोस्ट गर्नुहोस् (New Post)</h2>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">शीर्षक (Title)</label>
+            {{ form.title }}
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 font-bold mb-2">विधा (Category)</label>
+            {{ form.category }}
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-700 font-bold mb-2">रचना (Content)</label>
+            {{ form.content }}
+            <p class="text-sm text-gray-500 mt-1">तपाईं यहाँ नेपालीमा टाइप गर्न सक्नुहुन्छ (You can type in Nepali here).</p>
+        </div>
+
+        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded transition">
+            पोस्ट गर्नुहोस् (Publish)
+        </button>
+    </form>
+</div>
+{% endblock %}
