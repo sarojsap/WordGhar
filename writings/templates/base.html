@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ne"> <!-- Language set to Nepali -->
+<html lang="ne" id="html-root"> <!-- Language set to Nepali -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,38 +8,124 @@
     <!-- Google Fonts for Nepali -->
     <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Mukta', sans-serif; }
+        :root {
+            /* Dark Mode (Default) - Deep Navy Theme */
+            --bg-primary: #0a1929;
+            --bg-secondary: #132f4c;
+            --bg-card: #1a3a5c;
+            --text-primary: #ffffff;
+            --text-secondary: #b8c5d6;
+            --text-muted: #8b9dc3;
+            --accent-lavender: #b794f6;
+            --accent-peach: #f6ad55;
+            --accent-lavender-light: #c4b5fd;
+            --accent-peach-light: #fbbf24;
+            --border-color: #1e3a5f;
+            --shadow-color: rgba(0, 0, 0, 0.3);
+        }
+
+        [data-theme="light"] {
+            /* Light Mode */
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --accent-lavender: #8b5cf6;
+            --accent-peach: #f59e0b;
+            --accent-lavender-light: #a78bfa;
+            --accent-peach-light: #fbbf24;
+            --border-color: #e2e8f0;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Mukta', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-bg-primary { background-color: var(--bg-primary); }
+        .theme-bg-secondary { background-color: var(--bg-secondary); }
+        .theme-bg-card { background-color: var(--bg-card); }
+        .theme-text-primary { color: var(--text-primary); }
+        .theme-text-secondary { color: var(--text-secondary); }
+        .theme-text-muted { color: var(--text-muted); }
+        .theme-border { border-color: var(--border-color); }
+        .theme-accent-lavender { color: var(--accent-lavender); }
+        .theme-accent-peach { color: var(--accent-peach); }
+        .theme-btn-lavender { 
+            background-color: var(--accent-lavender);
+            color: white;
+        }
+        .theme-btn-lavender:hover { 
+            background-color: var(--accent-lavender-light);
+        }
+        .theme-btn-peach { 
+            background-color: var(--accent-peach);
+            color: white;
+        }
+        .theme-btn-peach:hover { 
+            background-color: var(--accent-peach-light);
+        }
+        .theme-shadow { box-shadow: 0 4px 6px var(--shadow-color); }
+        .theme-shadow-lg { box-shadow: 0 10px 15px var(--shadow-color); }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-    <nav class="bg-white shadow mb-8">
+<body class="theme-bg-primary theme-text-primary min-h-screen">
+    <nav class="theme-bg-secondary theme-shadow mb-8 border-b theme-border sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
         <!-- Logo -->
-        <a href="/" class="text-2xl font-bold text-indigo-600 flex items-center">
-            <span class="mr-2">📚</span> नेपाली साहित्य
+        <a href="/" class="text-2xl font-bold theme-accent-lavender flex items-center hover:opacity-80 transition">
+            <span class="mr-2">📚</span> शब्द संसार 
         </a>
 
         <!-- Menu -->
         <div class="flex items-center space-x-4">
+            <!-- Theme Toggle -->
+            <button id="theme-toggle" class="p-2 rounded-lg theme-bg-card hover:opacity-80 transition theme-text-primary" aria-label="Toggle theme">
+                <svg id="theme-icon-dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+                <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+            </button>
+
             {% if user.is_authenticated %}
                 <!-- Logged In State -->
-                <span class="text-gray-600 hidden md:inline">Namaste, <b>{{ user.username }}</b></span>
+                <div class="flex items-center space-x-3">
+                    <!-- Profile Photo or Initial -->
+                    <a href="{% url 'profile' user.username %}" class="flex items-center space-x-2 hover:opacity-80 transition">
+                        {% if user.profile_photo %}
+                            <img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" 
+                                 class="w-8 h-8 rounded-full object-cover border-2 theme-border">
+                        {% else %}
+                            <div class="w-8 h-8 rounded-full theme-bg-card flex items-center justify-center theme-accent-lavender font-bold text-sm border-2 theme-border">
+                                {{ user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <span class="theme-text-secondary hidden md:inline">Namaste, <b class="theme-text-primary">{{ user.username }}</b></span>
+                    </a>
+                </div>
                 
-                <a href="{% url 'writing_create' %}" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded text-sm font-medium transition">
+                <a href="{% url 'writing_create' %}" class="theme-btn-lavender px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
                     + लेख्नुहोस् (Write)
                 </a>
 
                 <!-- Logout Form (Required for Django 5) -->
                 <form action="{% url 'logout' %}" method="post" class="inline">
                     {% csrf_token %}
-                    <button type="submit" class="text-gray-500 hover:text-red-600 text-sm font-medium ml-2">
+                    <button type="submit" class="theme-text-muted hover:theme-accent-peach text-sm font-medium ml-2 transition">
                         Logout
                     </button>
                 </form>
             {% else %}
                 <!-- Guest State -->
-                <a href="{% url 'login' %}" class="text-gray-600 hover:text-indigo-600 font-medium">Login</a>
-                <a href="{% url 'signup' %}" class="bg-gray-800 hover:bg-gray-900 text-white px-4 py-2 rounded text-sm font-medium transition">
+                <a href="{% url 'login' %}" class="theme-text-secondary hover:theme-accent-lavender font-medium transition">Login</a>
+                <a href="{% url 'signup' %}" class="theme-btn-peach px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
                     Register
                 </a>
             {% endif %}
@@ -47,9 +133,50 @@
     </div>
 </nav>
 
-    <main class="container mx-auto px-4">
+    <main class="container mx-auto px-4 pb-8">
         {% block content %}
         {% endblock %}
     </main>
+
+    <script>
+        // Theme Toggle Functionality
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeIconDark = document.getElementById('theme-icon-dark');
+            const themeIconLight = document.getElementById('theme-icon-light');
+            const htmlRoot = document.getElementById('html-root');
+            
+            // Get saved theme or default to dark
+            const currentTheme = localStorage.getItem('theme') || 'dark';
+            
+            // Apply theme on load
+            if (currentTheme === 'light') {
+                htmlRoot.setAttribute('data-theme', 'light');
+                themeIconDark.classList.add('hidden');
+                themeIconLight.classList.remove('hidden');
+            } else {
+                htmlRoot.setAttribute('data-theme', 'dark');
+                themeIconDark.classList.remove('hidden');
+                themeIconLight.classList.add('hidden');
+            }
+            
+            // Toggle theme on button click
+            themeToggle.addEventListener('click', function() {
+                const currentTheme = htmlRoot.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                
+                htmlRoot.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                
+                if (newTheme === 'light') {
+                    themeIconDark.classList.add('hidden');
+                    themeIconLight.classList.remove('hidden');
+                } else {
+                    themeIconDark.classList.remove('hidden');
+                    themeIconLight.classList.add('hidden');
+                }
+            });
+        })();
+    </script>
 </body>
 </html>

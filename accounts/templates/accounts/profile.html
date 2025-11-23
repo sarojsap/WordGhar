@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10">
+    <!-- Profile Header -->
+    <div class="theme-bg-card rounded-lg theme-shadow theme-border border p-8 mb-8">
+        <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+            <!-- Profile Photo -->
+            <div class="flex-shrink-0">
+                {% if profile_user.profile_photo %}
+                    <img src="{{ profile_user.profile_photo.url }}" alt="{{ profile_user.username }}" 
+                         class="w-32 h-32 rounded-full object-cover border-4 theme-border">
+                {% else %}
+                    <div class="w-32 h-32 rounded-full theme-bg-secondary flex items-center justify-center theme-accent-lavender font-bold text-4xl border-4 theme-border">
+                        {{ profile_user.username|first|upper }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Info -->
+            <div class="flex-1 text-center md:text-left">
+                <h1 class="text-3xl font-bold theme-text-primary mb-2">
+                    {{ profile_user.get_full_name|default:profile_user.username }}
+                </h1>
+                <p class="theme-text-secondary mb-4">@{{ profile_user.username }}</p>
+                
+                {% if profile_user.bio %}
+                    <p class="theme-text-secondary leading-relaxed mb-4">{{ profile_user.bio|linebreaks }}</p>
+                {% else %}
+                    <p class="theme-text-muted italic mb-4">No bio available.</p>
+                {% endif %}
+
+                {% if is_own_profile %}
+                    <div class="flex gap-3 justify-center md:justify-start">
+                        <a href="{% url 'profile_edit' profile_user.username %}" 
+                           class="theme-btn-lavender px-4 py-2 rounded-lg font-medium transition theme-shadow">
+                            सम्पादन गर्नुहोस् (Edit Profile)
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- User's Writings -->
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold theme-text-primary mb-6 border-b-2 theme-border pb-2">
+            {% if is_own_profile %}
+                मेरा रचनाहरू (My Writings)
+            {% else %}
+                {{ profile_user.username }} को रचनाहरू ({{ profile_user.username }}'s Writings)
+            {% endif %}
+        </h2>
+    </div>
+
+    {% if writings %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for writing in writings %}
+        <div class="theme-bg-card rounded-lg theme-shadow hover:theme-shadow-lg transition-all duration-300 theme-border border overflow-hidden transform hover:-translate-y-1">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                    <div class="flex gap-2 flex-wrap">
+                        <!-- Type Badge (Poem/Story) -->
+                        {% if writing.category == 'poem' %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(246, 173, 85, 0.2); color: var(--accent-peach);">
+                                कविता
+                            </span>
+                        {% else %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(183, 148, 246, 0.2); color: var(--accent-lavender);">
+                                कथा
+                            </span>
+                        {% endif %}
+                        <!-- Content Category Badge -->
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded theme-bg-secondary theme-text-secondary">
+                            {{ writing.get_content_category_display }}
+                        </span>
+                    </div>
+                    
+                    <span class="text-sm theme-text-muted">{{ writing.created_at|date:"M d, Y" }}</span>
+                </div>
+
+                <h3 class="text-xl font-bold theme-text-primary mb-2 leading-tight hover:theme-accent-lavender transition">
+                    <a href="{% url 'writing_detail' writing.slug %}">
+                        {{ writing.title }}
+                    </a>
+                </h3>
+
+                <p class="theme-text-secondary mb-4 leading-relaxed text-sm">
+                    {{ writing.content|striptags|truncatewords:20 }}
+                </p>
+
+                <a href="{% url 'writing_detail' writing.slug %}" class="inline-flex items-center theme-accent-lavender hover:theme-accent-lavender-light font-medium text-sm transition">
+                    पूरा पढ्नुहोस् (Read More)
+                    <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12 theme-bg-card rounded theme-shadow">
+        <p class="theme-text-secondary text-lg">
+            {% if is_own_profile %}
+                तपाईंले अहिलेसम्म कुनै रचना अपलोड गर्नुभएको छैन। (You haven't created any posts yet.)
+            {% else %}
+                यस प्रयोगकर्ताले अहिलेसम्म कुनै रचना अपलोड गर्नुभएको छैन। (This user hasn't created any posts yet.)
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

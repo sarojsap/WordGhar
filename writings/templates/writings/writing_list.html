@@ -1,47 +1,138 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 <div class="max-w-5xl mx-auto mt-10">
+
+    <!-- Filters: Poem/Story -->
+    <div class="mb-6 flex flex-wrap gap-3 items-center">
+        <span class="theme-text-secondary font-semibold">Filter by Type:</span>
+        <a href="{% url 'writing_list' %}{% if request.GET.q %}?q={{ request.GET.q }}{% if request.GET.content_category %}&content_category={{ request.GET.content_category }}{% endif %}{% elif request.GET.content_category %}?content_category={{ request.GET.content_category }}{% endif %}" 
+           class="px-4 py-2 rounded-lg font-medium transition theme-shadow {% if not selected_category %}theme-btn-lavender{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+            All
+        </a>
+        <a href="{% url 'writing_list' %}?category=poem{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.content_category %}&content_category={{ request.GET.content_category }}{% endif %}" 
+           class="px-4 py-2 rounded-lg font-medium transition theme-shadow {% if selected_category == 'poem' %}theme-btn-peach{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+            कविता (Poems)
+        </a>
+        <a href="{% url 'writing_list' %}?category=story{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.content_category %}&content_category={{ request.GET.content_category }}{% endif %}" 
+           class="px-4 py-2 rounded-lg font-medium transition theme-shadow {% if selected_category == 'story' %}theme-btn-lavender{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+            कथा (Stories)
+        </a>
+    </div>
+
+    <!-- Search Bar -->
+<div class="mb-8">
+    <form method="get" action="{% url 'writing_list' %}" class="flex flex-col md:flex-row gap-3">
+        <input type="hidden" name="category" value="{{ selected_category }}">
+        <input type="hidden" name="content_category" value="{{ selected_content_category }}">
+        <input 
+            type="text" 
+            name="q" 
+            placeholder="रचना खोज्नुहोस् (Search stories, poems...)" 
+            value="{{ search_query }}"
+            class="flex-1 p-3 theme-bg-card theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 theme-shadow"
+        >
+        <button type="submit" class="theme-btn-lavender px-6 py-3 rounded-lg font-medium transition theme-shadow">
+            खोज्नुहोस्
+        </button>
+        
+        {% if request.GET.q or selected_category or selected_content_category %}
+        <a href="{% url 'writing_list' %}" class="flex items-center justify-center theme-text-muted hover:theme-accent-peach px-4 theme-border border rounded-lg transition theme-bg-secondary">
+            ✕ Clear All
+        </a>
+        {% endif %}
+    </form>
+</div>
+
+    <!-- Content Category Filters -->
+    <div class="mb-6">
+        <span class="theme-text-secondary font-semibold mb-2 block">Filter by Category:</span>
+        <div class="flex flex-wrap gap-2">
+            <a href="{% url 'writing_list' %}{% if selected_category %}?category={{ selected_category }}{% if search_query %}&q={{ search_query }}{% endif %}{% elif search_query %}?q={{ search_query }}{% endif %}" 
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition theme-shadow {% if not selected_content_category %}theme-btn-lavender{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+                All Categories
+            </a>
+            <a href="{% url 'writing_list' %}?content_category=emotions{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition theme-shadow {% if selected_content_category == 'emotions' %}theme-btn-peach{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+                भावनाहरू
+            </a>
+            <a href="{% url 'writing_list' %}?content_category=life_society{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition theme-shadow {% if selected_content_category == 'life_society' %}theme-btn-peach{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+                जीवन र समाज
+            </a>
+            <a href="{% url 'writing_list' %}?content_category=imagination{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition theme-shadow {% if selected_content_category == 'imagination' %}theme-btn-peach{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+                कल्पना र सृजनशीलता
+            </a>
+            <a href="{% url 'writing_list' %}?content_category=mystery_dark{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition theme-shadow {% if selected_content_category == 'mystery_dark' %}theme-btn-peach{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+                रहस्य र गहिरा विषयहरू
+            </a>
+            <a href="{% url 'writing_list' %}?content_category=patriotism_spirituality{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}" 
+               class="px-3 py-1.5 rounded-lg text-sm font-medium transition theme-shadow {% if selected_content_category == 'patriotism_spirituality' %}theme-btn-peach{% else %}theme-bg-secondary theme-text-primary hover:opacity-80{% endif %}">
+                देशभक्ति र आध्यात्मिकता
+            </a>
+        </div>
+    </div>
     
-    <h1 class="text-3xl font-bold text-gray-800 mb-8 border-b-2 border-indigo-100 pb-4">
+    <h1 class="text-3xl font-bold theme-text-primary mb-8 border-b-2 theme-border pb-4">
         नयाँ रचनाहरू (Latest Writings)
     </h1>
 
     {% if writings %}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         {% for writing in writings %}
-        <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 border border-gray-100 overflow-hidden">
+        <div class="theme-bg-card rounded-lg theme-shadow hover:theme-shadow-lg transition-all duration-300 theme-border border overflow-hidden transform hover:-translate-y-1">
             <div class="p-6">
-                <div class="flex justify-between items-center mb-3">
-                    <!-- Category Badge -->
-                    {% if writing.category == 'poem' %}
-                        <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                            कविता
+                <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                    <div class="flex gap-2 flex-wrap">
+                        <!-- Type Badge (Poem/Story) -->
+                        {% if writing.category == 'poem' %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(246, 173, 85, 0.2); color: var(--accent-peach);">
+                                कविता
+                            </span>
+                        {% else %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(183, 148, 246, 0.2); color: var(--accent-lavender);">
+                                कथा
+                            </span>
+                        {% endif %}
+                        <!-- Content Category Badge -->
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded theme-bg-secondary theme-text-secondary">
+                            {{ writing.get_content_category_display }}
                         </span>
-                    {% else %}
-                        <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">
-                            कथा
-                        </span>
-                    {% endif %}
+                    </div>
                     
-                    <span class="text-sm text-gray-500">{{ writing.created_at|date:"M d, Y" }}</span>
+                    <span class="text-sm theme-text-muted">{{ writing.created_at|date:"M d, Y" }}</span>
                 </div>
 
-                <h2 class="text-2xl font-bold text-gray-900 mb-2 leading-tight hover:text-indigo-600">
+                <h2 class="text-2xl font-bold theme-text-primary mb-2 leading-tight hover:theme-accent-lavender transition">
                     <a href="{% url 'writing_detail' writing.slug %}">
                         {{ writing.title }}
                     </a>
                 </h2>
 
-                <p class="text-sm text-gray-600 mb-4">
-                    By <span class="font-semibold text-gray-800">{{ writing.author.username }}</span>
-                </p>
+                <div class="flex items-center mb-4">
+                    <a href="{% url 'author_profile' writing.author.username %}" class="flex items-center hover:opacity-80 transition">
+                        {% if writing.author.profile_photo %}
+                            <img src="{{ writing.author.profile_photo.url }}" alt="{{ writing.author.username }}" 
+                                 class="w-8 h-8 rounded-full object-cover border-2 theme-border mr-2">
+                        {% else %}
+                            <div class="w-8 h-8 rounded-full theme-bg-secondary flex items-center justify-center theme-accent-lavender font-bold text-sm border-2 theme-border mr-2">
+                                {{ writing.author.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <p class="text-sm theme-text-secondary">
+                            By <span class="font-semibold theme-text-primary">{{ writing.author.username }}</span>
+                        </p>
+                    </a>
+                </div>
 
-                <p class="text-gray-700 mb-4 leading-relaxed">
+                <p class="theme-text-secondary mb-4 leading-relaxed">
                     {{ writing.content|striptags|truncatewords:25 }}
                 </p>
 
-                <a href="{% url 'writing_detail' writing.slug %}" class="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium">
+                <a href="{% url 'writing_detail' writing.slug %}" class="inline-flex items-center theme-accent-lavender hover:theme-accent-lavender-light font-medium transition">
                     पूरा पढ्नुहोस् (Read More)
                     <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </a>
@@ -50,10 +141,17 @@
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-12 bg-white rounded shadow-sm">
-        <p class="text-gray-500 text-lg">अहिले कुनै रचना उपलब्ध छैन। (No writings available yet)</p>
-    </div>
+<div class="text-center py-12 theme-bg-card rounded theme-shadow">
+    {% if request.GET.q %}
+        <p class="theme-text-secondary text-lg">
+            Sorry, no results found for "<b class="theme-text-primary">{{ request.GET.q }}</b>".
+        </p>
+        <a href="{% url 'writing_list' %}" class="theme-accent-lavender hover:theme-accent-lavender-light hover:underline mt-2 inline-block transition">View all writings</a>
+    {% else %}
+        <p class="theme-text-secondary text-lg">अहिले कुनै रचना उपलब्ध छैन। (No writings available yet)</p>
     {% endif %}
+</div>
+{% endif %}
 
 </div>
 {% endblock %}

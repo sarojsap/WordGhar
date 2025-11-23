@@ -4,54 +4,80 @@
 <div class="max-w-3xl mx-auto mt-10 mb-20">
     
     <!-- Back Button -->
-    <a href="{% url 'writing_list' %}" class="inline-flex items-center text-gray-500 hover:text-indigo-600 mb-6 transition-colors">
+    <a href="{% url 'writing_list' %}" class="inline-flex items-center theme-text-muted hover:theme-accent-lavender mb-6 transition-colors">
         <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
         गृहपृष्ठ (Home)
     </a>
 
-    <article class="bg-white p-8 md:p-12 rounded-lg shadow-sm border border-gray-100">
+    <article class="theme-bg-card p-8 md:p-12 rounded-lg theme-shadow theme-border border">
         <!-- Header -->
-        <header class="mb-8 border-b border-gray-100 pb-8">
-            <div class="flex items-center space-x-2 mb-4">
+        <header class="mb-8 border-b theme-border pb-8">
+            <div class="flex items-center space-x-2 mb-4 flex-wrap gap-2">
                 {% if writing.category == 'poem' %}
-                    <span class="bg-emerald-100 text-emerald-800 text-xs font-semibold px-2.5 py-0.5 rounded">कविता</span>
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(246, 173, 85, 0.2); color: var(--accent-peach);">कविता</span>
                 {% else %}
-                    <span class="bg-indigo-100 text-indigo-800 text-xs font-semibold px-2.5 py-0.5 rounded">कथा</span>
+                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(183, 148, 246, 0.2); color: var(--accent-lavender);">कथा</span>
                 {% endif %}
-                <span class="text-gray-400 text-sm">•</span>
-                <span class="text-gray-500 text-sm">{{ writing.created_at|date:"F d, Y" }}</span>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded theme-bg-secondary theme-text-secondary">
+                    {{ writing.get_content_category_display }}
+                </span>
+                <span class="theme-text-muted text-sm">•</span>
+                <span class="theme-text-muted text-sm">{{ writing.created_at|date:"F d, Y" }}</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+            <h1 class="text-4xl md:text-5xl font-bold theme-text-primary mb-4 leading-tight">
                 {{ writing.title }}
             </h1>
 
-            <div class="flex items-center">
-                <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xl mr-3">
-                    {{ writing.author.username|first|upper }}
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <a href="{% url 'author_profile' writing.author.username %}" class="flex items-center hover:opacity-80 transition">
+                        {% if writing.author.profile_photo %}
+                            <img src="{{ writing.author.profile_photo.url }}" alt="{{ writing.author.username }}" 
+                                 class="w-10 h-10 rounded-full object-cover border-2 theme-border mr-3">
+                        {% else %}
+                            <div class="w-10 h-10 rounded-full theme-bg-secondary flex items-center justify-center theme-accent-lavender font-bold text-xl mr-3 border-2 theme-border">
+                                {{ writing.author.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <div>
+                            <p class="text-sm font-semibold theme-text-primary">
+                                {{ writing.author.get_full_name|default:writing.author.username }}
+                            </p>
+                            <p class="text-xs theme-text-muted">Author</p>
+                        </div>
+                    </a>
                 </div>
-                <div>
-                    <p class="text-sm font-semibold text-gray-900">
-                        {{ writing.author.get_full_name|default:writing.author.username }}
-                    </p>
-                    <p class="text-xs text-gray-500">Author</p>
+                
+                <!-- Edit/Delete buttons (only for post owner) -->
+                {% if user.is_authenticated and user == writing.author %}
+                <div class="flex gap-3">
+                    <a href="{% url 'writing_update' writing.slug %}" 
+                       class="theme-btn-lavender px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
+                        सम्पादन (Edit)
+                    </a>
+                    <a href="{% url 'writing_delete' writing.slug %}" 
+                       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
+                        मेटाउनुहोस् (Delete)
+                    </a>
                 </div>
+                {% endif %}
             </div>
         </header>
 
-        <!-- AI Summary Section (Future Implementation) -->
+        <!-- AI Summary Section -->
         {% if writing.summary %}
-        <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-8 rounded-r">
+        <div class="theme-bg-secondary border-l-4 p-4 mb-8 rounded-r" style="border-left-color: var(--accent-lavender);">
             <div class="flex items-start">
                 <div class="flex-shrink-0">
                     <!-- Robot Icon -->
-                    <svg class="h-5 w-5 text-indigo-600 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="h-5 w-5 theme-accent-lavender mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                 </div>
                 <div class="ml-3">
-                    <h3 class="text-sm font-medium text-indigo-800">AI Summary (सारांश)</h3>
-                    <div class="mt-1 text-sm text-indigo-700">
+                    <h3 class="text-sm font-medium theme-accent-lavender">AI Summary (सारांश)</h3>
+                    <div class="mt-1 text-sm theme-text-secondary">
                         {{ writing.summary|linebreaks }}
                     </div>
                 </div>
@@ -61,8 +87,8 @@
 
         <!-- Main Content -->
         <!-- 'linebreaks' filter is essential for preserving poetry stanzas and paragraphs -->
-        <div class="prose prose-lg prose-indigo max-w-none text-gray-800 leading-loose">
-            {{ writing.content|linebreaks }}
+        <div class="prose prose-lg max-w-none theme-text-primary leading-loose" style="color: var(--text-primary);">
+            <div class="theme-text-secondary whitespace-pre-line">{{ writing.content|linebreaks }}</div>
         </div>
 
     </article>

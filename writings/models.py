@@ -11,12 +11,25 @@ class WritingCategory(models.TextChoices):
     POEM = "poem", "Poem"
     STORY = "story", "Story"
 
+class ContentCategory(models.TextChoices):
+    EMOTIONS = "emotions", "भावनाहरू (Emotions)"
+    LIFE_SOCIETY = "life_society", "जीवन र समाज (Life & Society)"
+    IMAGINATION = "imagination", "कल्पना र सृजनशीलता (Imagination & Creativity)"
+    MYSTERY_DARK = "mystery_dark", "रहस्य र गहिरा विषयहरू (Mystery & Dark Themes)"
+    PATRIOTISM_SPIRITUALITY = "patriotism_spirituality", "देशभक्ति र आध्यात्मिकता (Patriotism & Spirituality)"
+
 class Writing(models.Model):
     # Professional Fix: Use settings.AUTH_USER_MODEL
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='writings'
     )
     title = models.CharField(max_length=200)
-    category = models.CharField(max_length=20, choices=WritingCategory.choices)
+    category = models.CharField(max_length=20, choices=WritingCategory.choices, help_text="Poem or Story")
+    content_category = models.CharField(
+        max_length=50, 
+        choices=ContentCategory.choices,
+        default=ContentCategory.EMOTIONS,
+        help_text="Content category"
+    )
     slug = models.SlugField(max_length=255, unique=True, allow_unicode=True, blank=True)
     content = models.TextField()
 

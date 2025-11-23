@@ -1,29 +1,42 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm">
-    <h2 class="text-2xl font-bold mb-6 text-gray-800 border-b pb-2">नयाँ रचना पोस्ट गर्नुहोस् (New Post)</h2>
+<div class="max-w-2xl mx-auto theme-bg-card p-8 rounded-lg theme-shadow theme-border border">
+    <h2 class="text-2xl font-bold mb-6 theme-text-primary border-b theme-border pb-2">
+        {% if writing %}
+            रचना सम्पादन गर्नुहोस् (Edit Post)
+        {% else %}
+            नयाँ रचना पोस्ट गर्नुहोस् (New Post)
+        {% endif %}
+    </h2>
 
     <form method="post">
         {% csrf_token %}
         
         <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">शीर्षक (Title)</label>
+            <label class="block theme-text-primary font-bold mb-2">शीर्षक (Title)</label>
             {{ form.title }}
         </div>
 
         <div class="mb-4">
-            <label class="block text-gray-700 font-bold mb-2">विधा (Category)</label>
+            <label class="block theme-text-primary font-bold mb-2">प्रकार (Type)</label>
             {{ form.category }}
+            <p class="text-sm theme-text-muted mt-1">कविता वा कथा छान्नुहोस् (Choose Poem or Story)</p>
+        </div>
+
+        <div class="mb-4">
+            <label class="block theme-text-primary font-bold mb-2">विषय श्रेणी (Content Category)</label>
+            {{ form.content_category }}
+            <p class="text-sm theme-text-muted mt-1">रचनाको विषय श्रेणी छान्नुहोस् (Choose the content category)</p>
         </div>
 
         <div class="mb-6">
-            <label class="block text-gray-700 font-bold mb-2">रचना (Content)</label>
+            <label class="block theme-text-primary font-bold mb-2">रचना (Content)</label>
             {{ form.content }}
-            <p class="text-sm text-gray-500 mt-1">तपाईं यहाँ नेपालीमा टाइप गर्न सक्नुहुन्छ (You can type in Nepali here).</p>
+            <p class="text-sm theme-text-muted mt-1">तपाईं यहाँ नेपालीमा टाइप गर्न सक्नुहुन्छ (You can type in Nepali here).</p>
         </div>
 
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 px-4 rounded transition">
+        <button type="submit" class="w-full theme-btn-lavender font-bold py-3 px-4 rounded-lg transition theme-shadow hover:theme-shadow-lg">
             पोस्ट गर्नुहोस् (Publish)
         </button>
     </form>

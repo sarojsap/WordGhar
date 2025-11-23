@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-5xl mx-auto mt-10">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold theme-text-primary border-b-2 theme-border pb-4">
+            मेरा रचनाहरू (My Posts)
+        </h1>
+        <a href="{% url 'writing_create' %}" class="theme-btn-lavender px-4 py-2 rounded-lg font-medium transition theme-shadow">
+            + नयाँ रचना (New Post)
+        </a>
+    </div>
+
+    {% if writings %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for writing in writings %}
+        <div class="theme-bg-card rounded-lg theme-shadow hover:theme-shadow-lg transition-all duration-300 theme-border border overflow-hidden transform hover:-translate-y-1">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+                    <div class="flex gap-2 flex-wrap">
+                        <!-- Type Badge (Poem/Story) -->
+                        {% if writing.category == 'poem' %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(246, 173, 85, 0.2); color: var(--accent-peach);">
+                                कविता
+                            </span>
+                        {% else %}
+                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(183, 148, 246, 0.2); color: var(--accent-lavender);">
+                                कथा
+                            </span>
+                        {% endif %}
+                        <!-- Content Category Badge -->
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded theme-bg-secondary theme-text-secondary">
+                            {{ writing.get_content_category_display }}
+                        </span>
+                    </div>
+                    
+                    <span class="text-sm theme-text-muted">{{ writing.created_at|date:"M d, Y" }}</span>
+                </div>
+
+                <h2 class="text-2xl font-bold theme-text-primary mb-2 leading-tight hover:theme-accent-lavender transition">
+                    <a href="{% url 'writing_detail' writing.slug %}">
+                        {{ writing.title }}
+                    </a>
+                </h2>
+
+                <p class="theme-text-secondary mb-4 leading-relaxed">
+                    {{ writing.content|striptags|truncatewords:25 }}
+                </p>
+
+                <div class="flex items-center justify-between">
+                    <a href="{% url 'writing_detail' writing.slug %}" class="inline-flex items-center theme-accent-lavender hover:theme-accent-lavender-light font-medium transition">
+                        पढ्नुहोस् (Read)
+                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                    </a>
+                    
+                    <div class="flex gap-2">
+                        <a href="{% url 'writing_update' writing.slug %}" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition">
+                            सम्पादन (Edit)
+                        </a>
+                        <a href="{% url 'writing_delete' writing.slug %}" class="text-red-400 hover:text-red-300 text-sm font-medium transition">
+                            मेटाउनुहोस् (Delete)
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-12 theme-bg-card rounded theme-shadow">
+        <p class="theme-text-secondary text-lg mb-4">तपाईंले अहिलेसम्म कुनै रचना अपलोड गर्नुभएको छैन। (You haven't created any posts yet.)</p>
+        <a href="{% url 'writing_create' %}" class="inline-block theme-btn-lavender px-6 py-3 rounded-lg font-medium transition theme-shadow hover:theme-shadow-lg">
+            पहिलो रचना लेख्नुहोस् (Create Your First Post)
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

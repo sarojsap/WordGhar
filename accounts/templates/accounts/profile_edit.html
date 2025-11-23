@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto mt-10">
+    <div class="theme-bg-card rounded-lg theme-shadow theme-border border p-8">
+        <h1 class="text-3xl font-bold theme-text-primary mb-6 border-b-2 theme-border pb-4">
+            प्रोफाइल सम्पादन गर्नुहोस् (Edit Profile)
+        </h1>
+
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Current Profile Photo -->
+            {% if form.instance.profile_photo %}
+            <div class="mb-4">
+                <label class="block text-sm font-medium theme-text-primary mb-2">Current Profile Photo:</label>
+                <img src="{{ form.instance.profile_photo.url }}" alt="Current photo" 
+                     class="w-24 h-24 rounded-full object-cover border-2 theme-border">
+            </div>
+            {% endif %}
+
+            <!-- Profile Photo Upload -->
+            <div>
+                <label for="{{ form.profile_photo.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
+                    Profile Photo (प्रोफाइल फोटो)
+                </label>
+                {{ form.profile_photo }}
+                {% if form.profile_photo.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.profile_photo.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- First Name -->
+            <div>
+                <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
+                    First Name (पहिलो नाम)
+                </label>
+                {{ form.first_name }}
+                {% if form.first_name.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.first_name.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Last Name -->
+            <div>
+                <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
+                    Last Name (अन्तिम नाम)
+                </label>
+                {{ form.last_name }}
+                {% if form.last_name.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.last_name.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
+                    Email (इमेल)
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.email.errors }}</p>
+                {% endif %}
+            </div>
+
+            <!-- Bio -->
+            <div>
+                <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
+                    Bio (जीवनी)
+                </label>
+                {{ form.bio }}
+                {% if form.bio.errors %}
+                    <p class="text-red-400 text-sm mt-1">{{ form.bio.errors }}</p>
+                {% endif %}
+                <p class="theme-text-muted text-sm mt-1">Write a short bio about yourself (आफ्नो बारेमा छोटो जीवनी लेख्नुहोस्)</p>
+            </div>
+
+            <!-- Form Errors -->
+            {% if form.non_field_errors %}
+                <div class="bg-red-900 bg-opacity-30 border-l-4 border-red-500 p-4 rounded">
+                    <p class="text-red-300 text-sm">{{ form.non_field_errors }}</p>
+                </div>
+            {% endif %}
+
+            <!-- Submit Buttons -->
+            <div class="flex gap-4 pt-4">
+                <button type="submit" class="theme-btn-lavender px-6 py-3 rounded-lg font-medium transition theme-shadow">
+                    सेभ गर्नुहोस् (Save Changes)
+                </button>
+                <a href="{% url 'profile' form.instance.username %}" class="theme-bg-secondary hover:opacity-80 theme-text-primary px-6 py-3 rounded-lg font-medium transition theme-shadow">
+                    रद्द गर्नुहोस् (Cancel)
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
