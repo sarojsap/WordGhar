@@ -37,6 +37,29 @@ class ProfileEditView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         return self.get_object() == self.request.user
 
+    def form_valid(self, form):
+        # Handle cropped image if provided
+        cropped_image_data = self.request.POST.get('cropped_image')
+        if cropped_image_data:
+            import base64
+            from django.core.files.base import ContentFile
+            import uuid
+            
+            # Extract the base64 data
+            format, imgstr = cropped_image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            
+            # Create a unique filename
+            filename = f'profile_{uuid.uuid4()}.{ext}'
+            
+            # Convert base64 to file
+            data = ContentFile(base64.b64decode(imgstr), name=filename)
+            
+            # Save to the profile_photo field
+            form.instance.profile_photo = data
+        
+        return super().form_valid(form)
+
     def get_success_url(self):
         messages.success(self.request, 'Your profile has been updated successfully!')
         return reverse_lazy('profile', kwargs={'username': self.object.username})

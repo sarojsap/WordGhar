@@ -7,7 +7,7 @@
             प्रोफाइल सम्पादन गर्नुहोस् (Edit Profile)
         </h1>
 
-        <form method="post" enctype="multipart/form-data" class="space-y-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6" id="profileForm">
             {% csrf_token %}
             
             <!-- Current Profile Photo -->
@@ -24,7 +24,28 @@
                 <label for="{{ form.profile_photo.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
                     Profile Photo (प्रोफाइल फोटो)
                 </label>
-                {{ form.profile_photo }}
+                <input type="file" id="imageInput" accept="image/*" 
+                       class="w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition"
+                       style="background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
+                <input type="hidden" id="croppedImageData" name="cropped_image">
+                
+                <!-- Cropped Image Preview -->
+                <div id="croppedPreview" class="mt-3 hidden">
+                    <div class="flex items-center gap-3 p-3 theme-bg-secondary rounded-lg border theme-border">
+                        <img id="croppedThumbnail" src="" alt="Cropped preview" 
+                             class="w-16 h-16 rounded-full object-cover border-2 theme-border">
+                        <div class="flex-1">
+                            <p class="theme-text-primary font-medium">✓ Photo cropped and ready</p>
+                            <p class="theme-text-muted text-sm">फोटो काटिएको छ र अपलोड गर्न तयार छ</p>
+                        </div>
+                        <button type="button" id="removeImage" class="theme-text-primary hover:opacity-70 px-3 py-1 rounded">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                
                 {% if form.profile_photo.errors %}
                     <p class="text-red-400 text-sm mt-1">{{ form.profile_photo.errors }}</p>
                 {% endif %}
@@ -83,5 +104,153 @@
         </form>
     </div>
 </div>
-{% endblock %}
 
+<!-- Image Cropper Modal -->
+<div id="cropperModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50" style="display: none;">
+    <div class="theme-bg-card rounded-lg p-6 max-w-2xl w-full mx-4 theme-shadow">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold theme-text-primary">Crop Profile Photo (फोटो काट्नुहोस्)</h2>
+            <button type="button" id="closeCropper" class="theme-text-primary hover:opacity-70 text-3xl leading-none">
+                &times;
+            </button>
+        </div>
+        
+        <div class="mb-4">
+            <div class="max-h-96 overflow-hidden">
+                <img id="cropperImage" src="" alt="Image to crop" style="max-width: 100%;">
+            </div>
+        </div>
+        
+        <div class="flex gap-3 justify-end">
+            <button type="button" id="cancelCrop" class="theme-bg-secondary hover:opacity-80 theme-text-primary px-6 py-3 rounded-lg font-medium transition">
+                रद्द गर्नुहोस् (Cancel)
+            </button>
+            <button type="button" id="cropButton" class="theme-btn-lavender px-6 py-3 rounded-lg font-medium transition">
+                काट्नुहोस् र सेभ गर्नुहोस् (Crop & Save)
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Cropper.js CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+
+<!-- Cropper.js JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const imageInput = document.getElementById('imageInput');
+    const cropperModal = document.getElementById('cropperModal');
+    const cropperImage = document.getElementById('cropperImage');
+    const closeCropper = document.getElementById('closeCropper');
+    const cancelCrop = document.getElementById('cancelCrop');
+    const cropButton = document.getElementById('cropButton');
+    const croppedImageData = document.getElementById('croppedImageData');
+    const croppedPreview = document.getElementById('croppedPreview');
+    const croppedThumbnail = document.getElementById('croppedThumbnail');
+    const removeImage = document.getElementById('removeImage');
+    let cropper = null;
+
+    // When user selects an image
+    imageInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                cropperImage.src = event.target.result;
+                cropperModal.style.display = 'flex';
+                
+                // Initialize Cropper.js
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(cropperImage, {
+                    aspectRatio: 1, // Square crop for profile photo
+                    viewMode: 2,
+                    autoCropArea: 1,
+                    responsive: true,
+                    background: false,
+                    guides: true,
+                    center: true,
+                    highlight: true,
+                    cropBoxResizable: true,
+                    cropBoxMovable: true,
+                    dragMode: 'move',
+                    minCropBoxWidth: 100,
+                    minCropBoxHeight: 100,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Close modal
+    function closeModal() {
+        cropperModal.style.display = 'none';
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        imageInput.value = ''; // Reset file input
+    }
+
+    closeCropper.addEventListener('click', closeModal);
+    cancelCrop.addEventListener('click', closeModal);
+
+    // Crop and save
+    cropButton.addEventListener('click', function() {
+        if (cropper) {
+            // Get cropped canvas
+            const canvas = cropper.getCroppedCanvas({
+                width: 400,
+                height: 400,
+                imageSmoothingEnabled: true,
+                imageSmoothingQuality: 'high',
+            });
+
+            // Convert to blob and then to base64
+            canvas.toBlob(function(blob) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    // Store the cropped image data
+                    croppedImageData.value = reader.result;
+                    
+                    // Show preview
+                    croppedThumbnail.src = reader.result;
+                    croppedPreview.classList.remove('hidden');
+                    
+                    // Hide the file input
+                    imageInput.style.display = 'none';
+                    
+                    // Close modal
+                    closeModal();
+                };
+                reader.readAsDataURL(blob);
+            }, 'image/jpeg', 0.95);
+        }
+    });
+
+    // Remove cropped image
+    removeImage.addEventListener('click', function() {
+        // Clear the cropped data
+        croppedImageData.value = '';
+        croppedThumbnail.src = '';
+        
+        // Hide preview
+        croppedPreview.classList.add('hidden');
+        
+        // Show file input again
+        imageInput.style.display = 'block';
+        imageInput.value = '';
+    });
+
+    // Close modal when clicking outside
+    cropperModal.addEventListener('click', function(e) {
+        if (e.target === cropperModal) {
+            closeModal();
+        }
+    });
+});
+</script>
+{% endblock %}
