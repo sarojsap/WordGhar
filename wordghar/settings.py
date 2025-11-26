@@ -121,7 +121,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.WhiteNoiseStorage'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
@@ -143,7 +143,7 @@ STORAGES = {
     },
     # Static files (CSS, JS) -> WhiteNoise
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+        "BACKEND": "whitenoise.storage.WhiteNoiseStorage",
     },
 }
 
