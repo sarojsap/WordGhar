@@ -121,6 +121,7 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
@@ -157,3 +158,5 @@ CLOUDINARY_STORAGE = {
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
 
+# Tell Django to use Cloudinary for MEDIA files (uploads)
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
