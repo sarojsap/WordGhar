@@ -1,9 +1,13 @@
 from django.db.models import Q
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.contrib import messages
-from .models import Writing
+from .models import Writing, Like, Comment
 from .forms import WritingForm
 
 class WritingListView(ListView):
@@ -50,6 +54,22 @@ class WritingDetailView(DetailView):
     model = Writing
     context_object_name = 'writing'
     template_name = 'writings/writing_detail.html'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        writing = self.object
+        
+        # Get like count and check if current user liked it
+        context['like_count'] = writing.get_like_count()
+        if self.request.user.is_authenticated:
+            context['is_liked'] = writing.is_liked_by(self.request.user)
+        else:
+            context['is_liked'] = False
+        
+        # Get all comments
+        context['comments'] = writing.comments.all()
+        
+        return context
 
 class WritingCreateView(LoginRequiredMixin, CreateView):
     model = Writing
@@ -98,3 +118,68 @@ class MyPostsView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         return Writing.objects.filter(author=self.request.user).order_by('-created_at')
+
+
+@login_required
+@require_POST
+def toggle_like(request, slug):
+    """Toggle like on a writing"""
+    writing = get_object_or_404(Writing, slug=slug)
+    like, created = Like.objects.get_or_create(user=request.user, writing=writing)
+    
+    if not created:
+        # Unlike - delete the like
+        like.delete()
+        is_liked = False
+    else:
+        # Like - already created
+        is_liked = True
+    
+    like_count = writing.get_like_count()
+    
+    return JsonResponse({
+        'is_liked': is_liked,
+        'like_count': like_count
+    })
+
+
+@login_required
+@require_POST
+def add_comment(request, slug):
+    """Add a comment to a writing"""
+    writing = get_object_or_404(Writing, slug=slug)
+    content = request.POST.get('content', '').strip()
+    
+    if not content:
+        messages.error(request, 'Comment cannot be empty.')
+        return redirect('writing_detail', slug=slug)
+    
+    if len(content) > 1000:
+        messages.error(request, 'Comment is too long. Maximum 1000 characters.')
+        return redirect('writing_detail', slug=slug)
+    
+    Comment.objects.create(
+        writing=writing,
+        user=request.user,
+        content=content
+    )
+    
+    messages.success(request, 'Comment added successfully!')
+    return redirect('writing_detail', slug=slug)
+
+
+@login_required
+@require_POST
+def delete_comment(request, comment_id):
+    """Delete a comment - only author or post author can delete"""
+    comment = get_object_or_404(Comment, id=comment_id)
+    writing = comment.writing
+    
+    # Check if user is comment author or writing author
+    if request.user != comment.user and request.user != writing.author:
+        messages.error(request, 'You do not have permission to delete this comment.')
+        return redirect('writing_detail', slug=writing.slug)
+    
+    comment.delete()
+    messages.success(request, 'Comment deleted successfully!')
+    return redirect('writing_detail', slug=writing.slug)

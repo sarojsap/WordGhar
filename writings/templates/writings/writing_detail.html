@@ -91,7 +91,158 @@
             <div class="theme-text-secondary whitespace-pre-line">{{ writing.content|linebreaks }}</div>
         </div>
 
+        <!-- Like and Comment Section -->
+        <div class="mt-8 pt-8 border-t theme-border">
+            <!-- Like Button -->
+            <div class="mb-6">
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'toggle_like' writing.slug %}" class="inline" id="like-form">
+                        {% csrf_token %}
+                        <button type="submit" class="flex items-center space-x-2 theme-text-secondary hover:theme-accent-lavender transition-colors" id="like-button">
+                            <svg id="like-icon" class="w-6 h-6 {% if is_liked %}fill-current text-red-500{% else %}stroke-current{% endif %}" 
+                                 fill="{% if is_liked %}currentColor{% else %}none{% endif %}" 
+                                 stroke="{% if is_liked %}none{% else %}currentColor{% endif %}" 
+                                 viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                            </svg>
+                            <span id="like-count" class="font-semibold">{{ like_count }}</span>
+                            <span class="theme-text-muted">मन पराउनुहोस् (Like)</span>
+                        </button>
+                    </form>
+                {% else %}
+                    <div class="flex items-center space-x-2 theme-text-secondary">
+                        <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                        <span class="font-semibold">{{ like_count }}</span>
+                        <span class="theme-text-muted">मन पराउनुहोस् (Like)</span>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Comments Section -->
+            <div class="mt-8">
+                <h3 class="text-xl font-bold theme-text-primary mb-4">
+                    टिप्पणीहरू (Comments) 
+                    <span class="text-sm font-normal theme-text-muted">({{ comments.count }})</span>
+                </h3>
+
+                <!-- Add Comment Form -->
+                {% if user.is_authenticated %}
+                    <form method="post" action="{% url 'add_comment' writing.slug %}" class="mb-6">
+                        {% csrf_token %}
+                        <div class="flex flex-col space-y-2">
+                            <textarea name="content" rows="3" 
+                                      class="w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition resize-none"
+                                      placeholder="आफ्नो टिप्पणी लेख्नुहोस्... (Write your comment...)" 
+                                      required></textarea>
+                            <button type="submit" class="self-end theme-btn-lavender px-6 py-2 rounded-lg text-sm font-medium transition theme-shadow">
+                                टिप्पणी थप्नुहोस् (Post Comment)
+                            </button>
+                        </div>
+                    </form>
+                {% else %}
+                    <p class="theme-text-muted mb-4">
+                        <a href="{% url 'login' %}" class="theme-accent-lavender hover:underline">Login</a> to add a comment.
+                    </p>
+                {% endif %}
+
+                <!-- Comments List -->
+                <div class="space-y-4">
+                    {% for comment in comments %}
+                        <div class="theme-bg-secondary p-4 rounded-lg theme-border border">
+                            <div class="flex items-start justify-between">
+                                <div class="flex items-start space-x-3 flex-1">
+                                    <!-- Commenter Profile Photo -->
+                                    <div class="flex-shrink-0">
+                                        {% if comment.user.profile_photo %}
+                                            <img src="{{ comment.user.profile_photo.url }}" alt="{{ comment.user.username }}" 
+                                                 class="w-8 h-8 rounded-full object-cover border-2 theme-border">
+                                        {% else %}
+                                            <div class="w-8 h-8 rounded-full theme-bg-card flex items-center justify-center theme-accent-lavender font-bold text-sm border-2 theme-border">
+                                                {{ comment.user.username|first|upper }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Comment Content -->
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-2 mb-1">
+                                            <a href="{% url 'author_profile' comment.user.username %}" class="font-semibold theme-text-primary hover:theme-accent-lavender transition">
+                                                {{ comment.user.get_full_name|default:comment.user.username }}
+                                            </a>
+                                            <span class="theme-text-muted text-xs">•</span>
+                                            <span class="theme-text-muted text-xs">{{ comment.created_at|timesince }} ago</span>
+                                        </div>
+                                        <p class="theme-text-secondary whitespace-pre-line">{{ comment.content|linebreaks }}</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Delete Comment Button (only for comment author or post author) -->
+                                {% if user == comment.user or user == writing.author %}
+                                    <form method="post" action="{% url 'delete_comment' comment.id %}" class="ml-2">
+                                        {% csrf_token %}
+                                        <button type="submit" 
+                                                class="text-red-400 hover:text-red-500 transition p-1"
+                                                onclick="return confirm('Are you sure you want to delete this comment?');">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="theme-text-muted text-center py-8">No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
     </article>
 
 </div>
+
+<script>
+    // AJAX for like button
+    document.addEventListener('DOMContentLoaded', function() {
+        const likeForm = document.getElementById('like-form');
+        if (likeForm) {
+            likeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const likeButton = document.getElementById('like-button');
+                const likeIcon = document.getElementById('like-icon');
+                const likeCount = document.getElementById('like-count');
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    likeCount.textContent = data.like_count;
+                    if (data.is_liked) {
+                        likeIcon.classList.add('fill-current', 'text-red-500');
+                        likeIcon.classList.remove('stroke-current');
+                        likeIcon.setAttribute('fill', 'currentColor');
+                        likeIcon.setAttribute('stroke', 'none');
+                    } else {
+                        likeIcon.classList.remove('fill-current', 'text-red-500');
+                        likeIcon.classList.add('stroke-current');
+                        likeIcon.setAttribute('fill', 'none');
+                        likeIcon.setAttribute('stroke', 'currentColor');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    });
+</script>
 {% endblock %}

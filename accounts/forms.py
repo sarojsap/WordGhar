@@ -32,6 +32,22 @@ class CustomUserCreationForm(UserCreationForm):
             'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
         })
     )
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
+            'placeholder': 'Password',
+            'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
+        })
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={
+            'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
+            'placeholder': 'Confirm Password',
+            'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
+        })
+    )
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -41,26 +57,11 @@ class CustomUserCreationForm(UserCreationForm):
     
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name', 'date_of_birth', 'password1', 'password2')
+        fields = ('username', 'first_name', 'last_name', 'date_of_birth', 'password1', 'password2')
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
                 'placeholder': 'Username',
-                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
-                'placeholder': 'Email (इमेल)',
-                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
-            }),
-            'password1': forms.PasswordInput(attrs={
-                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
-                'placeholder': 'Password',
-                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
-            }),
-            'password2': forms.PasswordInput(attrs={
-                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
-                'placeholder': 'Confirm Password',
                 'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
             }),
         }

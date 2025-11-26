@@ -58,6 +58,45 @@ class Writing(models.Model):
     def __str__(self):
         return f"{self.title} ({self.category})"
     
+    def get_like_count(self):
+        """Return the number of likes for this writing"""
+        return self.likes.count()
+    
+    def is_liked_by(self, user):
+        """Check if a user has liked this writing"""
+        if not user.is_authenticated:
+            return False
+        return self.likes.filter(user=user).exists()
+
+
+class Like(models.Model):
+    """Model to track likes (loves) on writings"""
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='likes')
+    writing = models.ForeignKey(Writing, on_delete=models.CASCADE, related_name='likes')
+    created_at = models.DateTimeField(default=timezone.now)
+    
+    class Meta:
+        unique_together = ('user', 'writing')  # Prevent duplicate likes
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.user.username} likes {self.writing.title}"
+
+
+class Comment(models.Model):
+    """Model to store comments on writings"""
+    writing = models.ForeignKey(Writing, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='comments')
+    content = models.TextField(max_length=1000)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Comment by {self.user.username} on {self.writing.title}"
+
 
 def run_ai_summary_background(writing_id, content):
     """
