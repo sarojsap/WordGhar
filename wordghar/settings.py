@@ -31,11 +31,11 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'cloudinary_storage',
     'django.contrib.staticfiles',
+    'cloudinary',
     'accounts',
     'writings',
-    'cloudinary_storage',
-    'cloudinary',
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
