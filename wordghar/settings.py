@@ -121,7 +121,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.WhiteNoiseStorage'
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
@@ -137,15 +136,17 @@ LOGIN_REDIRECT_URL = 'writing_list'
 LOGOUT_REDIRECT_URL = 'writing_list'
 
 STORAGES = {
-    # Media files (Images uploaded by users) -> Cloudinary
     "default": {
         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
     },
-    # Static files (CSS, JS) -> WhiteNoise
     "staticfiles": {
-        "BACKEND": "whitenoise.storage.WhiteNoiseStorage",
+        # Use standard Django storage (Safest option, no compression errors)
+        "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+
+# LEGACY SETTING
+STATICFILES_STORAGE = "django.contrib.staticfiles.storage.StaticFilesStorage"
 
 import cloudinary
 import cloudinary.uploader
