@@ -52,17 +52,6 @@
                 {% endif %}
             </div>
 
-            <!-- Email -->
-            <div>
-                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
-                    Email (इमेल)
-                </label>
-                {{ form.email }}
-                {% if form.email.errors %}
-                    <p class="text-red-400 text-sm mt-1">{{ form.email.errors }}</p>
-                {% endif %}
-            </div>
-
             <!-- Bio -->
             <div>
                 <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">

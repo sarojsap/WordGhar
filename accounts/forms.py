@@ -69,24 +69,27 @@ class CustomUserCreationForm(UserCreationForm):
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('bio', 'profile_photo', 'email', 'first_name', 'last_name')
+        fields = ('bio', 'profile_photo', 'first_name', 'last_name')
         widgets = {
             'bio': forms.Textarea(attrs={
-                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500',
+                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
                 'rows': 4,
-                'placeholder': 'Write a short bio about yourself...'
-            }),
-            'email': forms.EmailInput(attrs={
-                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                'placeholder': 'Write a short bio about yourself...',
+                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
             }),
             'first_name': forms.TextInput(attrs={
-                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
+                'placeholder': 'First Name (पहिलो नाम)',
+                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
             }),
             'last_name': forms.TextInput(attrs={
-                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500'
+                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
+                'placeholder': 'Last Name (अन्तिम नाम)',
+                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
             }),
             'profile_photo': forms.FileInput(attrs={
-                'class': 'w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500',
-                'accept': 'image/*'
+                'class': 'w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition',
+                'accept': 'image/*',
+                'style': 'background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);'
             }),
         }
