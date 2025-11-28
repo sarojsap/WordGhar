@@ -181,7 +181,7 @@
                     {% endif %}
                 </div>
 
-                <!-- Mobile Menu Button (hidden for now, can add hamburger menu if needed) -->
+                <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center space-x-2">
                     <button id="theme-toggle-mobile" class="p-2 rounded-lg theme-bg-hover theme-transition theme-text-primary">
                         <svg id="theme-icon-dark-mobile" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -191,12 +191,57 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
                         </svg>
                     </button>
-                    {% if user.is_authenticated %}
-                        <a href="{% url 'writing_create' %}" class="theme-btn-primary px-3 py-2 rounded-lg text-sm font-medium">
-                            + Write
-                        </a>
-                    {% endif %}
+                    <!-- Hamburger Menu Button -->
+                    <button id="mobile-menu-button" class="p-2 rounded-lg theme-bg-hover theme-transition theme-text-primary" aria-label="Toggle menu">
+                        <svg id="hamburger-icon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <svg id="close-icon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t theme-border">
+            <div class="container mx-auto px-4 py-4 space-y-3">
+                {% if user.is_authenticated %}
+                    <!-- Profile Link -->
+                    <a href="{% url 'profile' user.username %}" class="flex items-center space-x-3 px-3 py-2 rounded-lg hover:theme-bg-hover theme-transition">
+                        {% if user.profile_photo %}
+                            <img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" 
+                                 class="w-8 h-8 rounded-full object-cover border-2 theme-border">
+                        {% else %}
+                            <div class="w-8 h-8 rounded-full theme-bg-card flex items-center justify-center theme-accent-primary font-semibold text-sm border-2 theme-border">
+                                {{ user.username|first|upper }}
+                            </div>
+                        {% endif %}
+                        <span class="theme-text-secondary text-sm font-medium">{{ user.username }}</span>
+                    </a>
+                    
+                    <!-- Write Button -->
+                    <a href="{% url 'writing_create' %}" class="block theme-btn-primary px-4 py-2.5 rounded-lg text-sm font-medium theme-shadow text-center">
+                        + लेख्नुहोस्
+                    </a>
+
+                    <!-- Logout Button -->
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="w-full text-left theme-text-muted hover:theme-accent-primary text-sm font-medium px-3 py-2 rounded-lg hover:theme-bg-hover theme-transition">
+                            Logout
+                        </button>
+                    </form>
+                {% else %}
+                    <!-- Guest State -->
+                    <a href="{% url 'login' %}" class="block theme-text-secondary hover:theme-accent-primary font-medium px-3 py-2 rounded-lg hover:theme-bg-hover theme-transition text-center">
+                        Login
+                    </a>
+                    <a href="{% url 'signup' %}" class="block theme-btn-primary px-5 py-2.5 rounded-lg text-sm font-medium theme-shadow text-center">
+                        Register
+                    </a>
+                {% endif %}
             </div>
         </div>
     </nav>
@@ -211,7 +256,7 @@
     <footer class="theme-bg-secondary border-t theme-border mt-20 py-8">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <p class="text-center theme-text-muted text-sm">
-                © 2024 शब्दघर - Nepali Literary Platform. सबै अधिकार सुरक्षित।
+                © 2025 शब्द संसार - Nepali Literary Platform. सबै अधिकार सुरक्षित।
             </p>
         </div>
     </footer>
@@ -260,6 +305,20 @@
             // Add event listeners
             themeToggle.addEventListener('click', toggleTheme);
             themeToggleMobile.addEventListener('click', toggleTheme);
+        })();
+
+        // Mobile Menu Toggle
+        (function() {
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const hamburgerIcon = document.getElementById('hamburger-icon');
+            const closeIcon = document.getElementById('close-icon');
+            
+            mobileMenuButton.addEventListener('click', function() {
+                mobileMenu.classList.toggle('hidden');
+                hamburgerIcon.classList.toggle('hidden');
+                closeIcon.classList.toggle('hidden');
+            });
         })();
     </script>
 </body>
