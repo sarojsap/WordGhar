@@ -1,131 +1,138 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10">
-    <div class="theme-bg-card rounded-lg theme-shadow theme-border border p-8">
-        <h1 class="text-3xl font-bold theme-text-primary mb-6 border-b-2 theme-border pb-4">
-            प्रोफाइल सम्पादन गर्नुहोस् (Edit Profile)
-        </h1>
+<div class="max-w-4xl mx-auto">
+    <div class="theme-bg-card rounded-2xl theme-shadow-xl theme-border border overflow-hidden">
+        <!-- Header -->
+        <div class="p-8 md:p-10 border-b theme-border theme-bg-hover">
+            <h1 class="text-3xl md:text-4xl font-bold theme-text-primary mb-2">
+                प्रोफाइल सम्पादन गर्नुहोस्
+            </h1>
+            <p class="theme-text-secondary">Edit Your Profile Information</p>
+        </div>
 
-        <form method="post" enctype="multipart/form-data" class="space-y-6" id="profileForm">
+        <!-- Form -->
+        <form method="post" enctype="multipart/form-data" class="p-8 md:p-10" id="profileForm">
             {% csrf_token %}
             
-            <!-- Current Profile Photo -->
-            {% if form.instance.profile_photo %}
-            <div class="mb-4">
-                <label class="block text-sm font-medium theme-text-primary mb-2">Current Profile Photo:</label>
-                <img src="{{ form.instance.profile_photo.url }}" alt="Current photo" 
-                     class="w-24 h-24 rounded-full object-cover border-2 theme-border">
-            </div>
-            {% endif %}
+            <div class="space-y-8">
+                <!-- Current Profile Photo -->
+                {% if form.instance.profile_photo %}
+                <div>
+                    <label class="block text-sm font-semibold theme-text-primary mb-3">Current Profile Photo:</label>
+                    <img src="{{ form.instance.profile_photo.url }}" alt="Current photo" 
+                         class="w-24 h-24 rounded-full object-cover border-4 theme-border shadow-lg">
+                </div>
+                {% endif %}
 
-            <!-- Profile Photo Upload -->
-            <div>
-                <label for="{{ form.profile_photo.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
-                    Profile Photo (प्रोफाइल फोटो)
-                </label>
-                <input type="file" id="imageInput" accept="image/*" 
-                       class="w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition"
-                       style="background-color: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-color);">
-                <input type="hidden" id="croppedImageData" name="cropped_image">
-                
-                <!-- Cropped Image Preview -->
-                <div id="croppedPreview" class="mt-3 hidden">
-                    <div class="flex items-center gap-3 p-3 theme-bg-secondary rounded-lg border theme-border">
-                        <img id="croppedThumbnail" src="" alt="Cropped preview" 
-                             class="w-16 h-16 rounded-full object-cover border-2 theme-border">
-                        <div class="flex-1">
-                            <p class="theme-text-primary font-medium">✓ Photo cropped and ready</p>
-                            <p class="theme-text-muted text-sm">फोटो काटिएको छ र अपलोड गर्न तयार छ</p>
+                <!-- Profile Photo Upload -->
+                <div>
+                    <label for="{{ form.profile_photo.id_for_label }}" class="block text-sm font-semibold theme-text-primary mb-3">
+                        Profile Photo (प्रोफाइल फोटो)
+                    </label>
+                    <input type="file" id="imageInput" accept="image/*" 
+                           class="w-full px-4 py-3 theme-bg-hover theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 theme-transition"
+                           style="background-color: var(--bg-hover); color: var(--text-primary); border-color: var(--border-color);">
+                    <input type="hidden" id="croppedImageData" name="cropped_image">
+                    
+                    <!-- Cropped Image Preview -->
+                    <div id="croppedPreview" class="mt-4 hidden">
+                        <div class="flex items-center gap-4 p-4 theme-bg-hover rounded-lg border theme-border">
+                            <img id="croppedThumbnail" src="" alt="Cropped preview" 
+                                 class="w-16 h-16 rounded-full object-cover border-2 theme-border">
+                            <div class="flex-1">
+                                <p class="theme-text-primary font-medium">✓ Photo cropped and ready</p>
+                                <p class="theme-text-muted text-sm">फोटो काटिएको छ र अपलोड गर्न तयार छ</p>
+                            </div>
+                            <button type="button" id="removeImage" class="theme-text-primary hover:opacity-70 px-3 py-2 rounded-lg theme-bg-card hover:theme-bg-primary theme-transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
                         </div>
-                        <button type="button" id="removeImage" class="theme-text-primary hover:opacity-70 px-3 py-1 rounded">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                            </svg>
-                        </button>
                     </div>
+                    
+                    {% if form.profile_photo.errors %}
+                        <p class="text-red-400 text-sm mt-2">{{ form.profile_photo.errors }}</p>
+                    {% endif %}
                 </div>
-                
-                {% if form.profile_photo.errors %}
-                    <p class="text-red-400 text-sm mt-1">{{ form.profile_photo.errors }}</p>
-                {% endif %}
-            </div>
 
-            <!-- First Name -->
-            <div>
-                <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
-                    First Name (पहिलो नाम)
-                </label>
-                {{ form.first_name }}
-                {% if form.first_name.errors %}
-                    <p class="text-red-400 text-sm mt-1">{{ form.first_name.errors }}</p>
-                {% endif %}
-            </div>
-
-            <!-- Last Name -->
-            <div>
-                <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
-                    Last Name (अन्तिम नाम)
-                </label>
-                {{ form.last_name }}
-                {% if form.last_name.errors %}
-                    <p class="text-red-400 text-sm mt-1">{{ form.last_name.errors }}</p>
-                {% endif %}
-            </div>
-
-            <!-- Bio -->
-            <div>
-                <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium theme-text-primary mb-2">
-                    Bio (जीवनी)
-                </label>
-                {{ form.bio }}
-                {% if form.bio.errors %}
-                    <p class="text-red-400 text-sm mt-1">{{ form.bio.errors }}</p>
-                {% endif %}
-                <p class="theme-text-muted text-sm mt-1">Write a short bio about yourself (आफ्नो बारेमा छोटो जीवनी लेख्नुहोस्)</p>
-            </div>
-
-            <!-- Form Errors -->
-            {% if form.non_field_errors %}
-                <div class="bg-red-900 bg-opacity-30 border-l-4 border-red-500 p-4 rounded">
-                    <p class="text-red-300 text-sm">{{ form.non_field_errors }}</p>
+                <!-- First Name -->
+                <div>
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold theme-text-primary mb-3">
+                        First Name (पहिलो नाम)
+                    </label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}
+                        <p class="text-red-400 text-sm mt-2">{{ form.first_name.errors }}</p>
+                    {% endif %}
                 </div>
-            {% endif %}
 
-            <!-- Submit Buttons -->
-            <div class="flex gap-4 pt-4">
-                <button type="submit" class="theme-btn-lavender px-6 py-3 rounded-lg font-medium transition theme-shadow">
-                    सेभ गर्नुहोस् (Save Changes)
-                </button>
-                <a href="{% url 'profile' form.instance.username %}" class="theme-bg-secondary hover:opacity-80 theme-text-primary px-6 py-3 rounded-lg font-medium transition theme-shadow">
-                    रद्द गर्नुहोस् (Cancel)
-                </a>
+                <!-- Last Name -->
+                <div>
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold theme-text-primary mb-3">
+                        Last Name (अन्तिम नाम)
+                    </label>
+                    {{ form.last_name }}
+                    {% if form.last_name.errors %}
+                        <p class="text-red-400 text-sm mt-2">{{ form.last_name.errors }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Bio -->
+                <div>
+                    <label for="{{ form.bio.id_for_label }}" class="block text-sm font-semibold theme-text-primary mb-3">
+                        Bio (जीवनी)
+                    </label>
+                    {{ form.bio }}
+                    {% if form.bio.errors %}
+                        <p class="text-red-400 text-sm mt-2">{{ form.bio.errors }}</p>
+                    {% endif %}
+                    <p class="theme-text-muted text-sm mt-2">Write a short bio about yourself (आफ्नो बारेमा छोटो जीवनी लेख्नुहोस्)</p>
+                </div>
+
+                <!-- Form Errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-900 bg-opacity-30 border-l-4 border-red-500 p-4 rounded-lg">
+                        <p class="text-red-300 text-sm">{{ form.non_field_errors }}</p>
+                    </div>
+                {% endif %}
+
+                <!-- Submit Buttons -->
+                <div class="flex gap-4 pt-6 border-t theme-border">
+                    <button type="submit" class="theme-btn-primary px-8 py-3 rounded-lg font-medium theme-shadow">
+                        ✓ सेभ गर्नुहोस् (Save Changes)
+                    </button>
+                    <a href="{% url 'profile' form.instance.username %}" class="theme-bg-hover hover:theme-bg-card theme-text-primary px-8 py-3 rounded-lg font-medium theme-transition theme-border border">
+                        ✕ रद्द गर्नुहोस् (Cancel)
+                    </a>
+                </div>
             </div>
         </form>
     </div>
 </div>
 
 <!-- Image Cropper Modal -->
-<div id="cropperModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50" style="display: none;">
-    <div class="theme-bg-card rounded-lg p-6 max-w-2xl w-full mx-4 theme-shadow">
-        <div class="flex justify-between items-center mb-4">
+<div id="cropperModal" class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50 p-4" style="display: none;">
+    <div class="theme-bg-card rounded-2xl p-6 max-w-2xl w-full theme-shadow-xl">
+        <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold theme-text-primary">Crop Profile Photo (फोटो काट्नुहोस्)</h2>
             <button type="button" id="closeCropper" class="theme-text-primary hover:opacity-70 text-3xl leading-none">
                 &times;
             </button>
         </div>
         
-        <div class="mb-4">
-            <div class="max-h-96 overflow-hidden">
+        <div class="mb-6">
+            <div class="max-h-96 overflow-hidden rounded-lg">
                 <img id="cropperImage" src="" alt="Image to crop" style="max-width: 100%;">
             </div>
         </div>
         
         <div class="flex gap-3 justify-end">
-            <button type="button" id="cancelCrop" class="theme-bg-secondary hover:opacity-80 theme-text-primary px-6 py-3 rounded-lg font-medium transition">
+            <button type="button" id="cancelCrop" class="theme-bg-hover hover:theme-bg-card theme-text-primary px-6 py-3 rounded-lg font-medium theme-transition">
                 रद्द गर्नुहोस् (Cancel)
             </button>
-            <button type="button" id="cropButton" class="theme-btn-lavender px-6 py-3 rounded-lg font-medium transition">
+            <button type="button" id="cropButton" class="theme-btn-primary px-6 py-3 rounded-lg font-medium theme-shadow">
                 काट्नुहोस् र सेभ गर्नुहोस् (Crop & Save)
             </button>
         </div>
@@ -166,7 +173,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     cropper.destroy();
                 }
                 cropper = new Cropper(cropperImage, {
-                    aspectRatio: 1, // Square crop for profile photo
+                    aspectRatio: 1,
                     viewMode: 2,
                     autoCropArea: 1,
                     responsive: true,
@@ -192,7 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cropper.destroy();
             cropper = null;
         }
-        imageInput.value = ''; // Reset file input
+        imageInput.value = '';
     }
 
     closeCropper.addEventListener('click', closeModal);
@@ -201,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Crop and save
     cropButton.addEventListener('click', function() {
         if (cropper) {
-            // Get cropped canvas
             const canvas = cropper.getCroppedCanvas({
                 width: 400,
                 height: 400,
@@ -209,21 +215,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 imageSmoothingQuality: 'high',
             });
 
-            // Convert to blob and then to base64
             canvas.toBlob(function(blob) {
                 const reader = new FileReader();
                 reader.onloadend = function() {
-                    // Store the cropped image data
                     croppedImageData.value = reader.result;
-                    
-                    // Show preview
                     croppedThumbnail.src = reader.result;
                     croppedPreview.classList.remove('hidden');
-                    
-                    // Hide the file input
                     imageInput.style.display = 'none';
-                    
-                    // Close modal
                     closeModal();
                 };
                 reader.readAsDataURL(blob);
@@ -233,14 +231,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Remove cropped image
     removeImage.addEventListener('click', function() {
-        // Clear the cropped data
         croppedImageData.value = '';
         croppedThumbnail.src = '';
-        
-        // Hide preview
         croppedPreview.classList.add('hidden');
-        
-        // Show file input again
         imageInput.style.display = 'block';
         imageInput.value = '';
     });

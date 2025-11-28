@@ -1,79 +1,103 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-5xl mx-auto mt-10">
-    <div class="flex justify-between items-center mb-8">
-        <h1 class="text-3xl font-bold theme-text-primary border-b-2 theme-border pb-4">
-            मेरा रचनाहरू (My Posts)
-        </h1>
-        <a href="{% url 'writing_create' %}" class="theme-btn-lavender px-4 py-2 rounded-lg font-medium transition theme-shadow">
-            + नयाँ रचना (New Post)
+<div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-10">
+        <div>
+            <h1 class="text-4xl font-bold theme-text-primary mb-2 border-b-2 theme-border pb-4 inline-block">
+                मेरा रचनाहरू
+            </h1>
+            <p class="theme-text-secondary mt-3">My Posts</p>
+        </div>
+        <a href="{% url 'writing_create' %}" class="theme-btn-primary px-6 py-3 rounded-lg font-medium theme-shadow inline-flex items-center gap-2 self-start">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            नयाँ रचना (New Post)
         </a>
     </div>
 
     {% if writings %}
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {% for writing in writings %}
-        <div class="theme-bg-card rounded-lg theme-shadow hover:theme-shadow-lg transition-all duration-300 theme-border border overflow-hidden transform hover:-translate-y-1">
-            <div class="p-6">
-                <div class="flex justify-between items-center mb-3 flex-wrap gap-2">
+        <article class="theme-bg-card rounded-xl theme-shadow-lg hover:theme-shadow-xl theme-transition theme-border border overflow-hidden group">
+            <div class="p-6 md:p-8">
+                <!-- Header -->
+                <div class="flex justify-between items-start mb-4 flex-wrap gap-2">
                     <div class="flex gap-2 flex-wrap">
-                        <!-- Type Badge (Poem/Story) -->
+                        <!-- Type Badge -->
                         {% if writing.category == 'poem' %}
-                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(246, 173, 85, 0.2); color: var(--accent-peach);">
-                                कविता
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background-color: rgba(139, 92, 246, 0.15); color: var(--accent-secondary);">
+                                📝 कविता
                             </span>
                         {% else %}
-                            <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(183, 148, 246, 0.2); color: var(--accent-lavender);">
-                                कथा
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold" style="background-color: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">
+                                📖 कथा
                             </span>
                         {% endif %}
                         <!-- Content Category Badge -->
-                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded theme-bg-secondary theme-text-secondary">
+                        <span class="px-3 py-1 rounded-full text-xs font-medium theme-bg-hover theme-text-secondary">
                             {{ writing.get_content_category_display }}
                         </span>
                     </div>
                     
-                    <span class="text-sm theme-text-muted">{{ writing.created_at|date:"M d, Y" }}</span>
+                    <span class="text-xs theme-text-muted">{{ writing.created_at|date:"M d, Y" }}</span>
                 </div>
 
-                <h2 class="text-2xl font-bold theme-text-primary mb-2 leading-tight hover:theme-accent-lavender transition">
+                <!-- Title -->
+                <h2 class="text-2xl font-bold theme-text-primary mb-3 leading-tight group-hover:theme-accent-primary theme-transition">
                     <a href="{% url 'writing_detail' writing.slug %}">
                         {{ writing.title }}
                     </a>
                 </h2>
 
-                <p class="theme-text-secondary mb-4 leading-relaxed">
+                <!-- Excerpt -->
+                <p class="theme-text-secondary mb-6 leading-relaxed line-clamp-3">
                     {{ writing.content|striptags|truncatewords:25 }}
                 </p>
 
-                <div class="flex items-center justify-between">
-                    <a href="{% url 'writing_detail' writing.slug %}" class="inline-flex items-center theme-accent-lavender hover:theme-accent-lavender-light font-medium transition">
-                        पढ्नुहोस् (Read)
-                        <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                <!-- Actions -->
+                <div class="flex items-center justify-between pt-4 border-t theme-border">
+                    <a href="{% url 'writing_detail' writing.slug %}" class="inline-flex items-center theme-accent-primary hover:theme-accent-secondary font-semibold text-sm theme-transition">
+                        पढ्नुहोस् →
                     </a>
                     
-                    <div class="flex gap-2">
-                        <a href="{% url 'writing_update' writing.slug %}" class="text-blue-400 hover:text-blue-300 text-sm font-medium transition">
-                            सम्पादन (Edit)
+                    <div class="flex gap-3">
+                        <a href="{% url 'writing_update' writing.slug %}" class="theme-btn-secondary px-4 py-2 rounded-lg text-xs font-medium theme-transition inline-flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                            </svg>
+                            Edit
                         </a>
-                        <a href="{% url 'writing_delete' writing.slug %}" class="text-red-400 hover:text-red-300 text-sm font-medium transition">
-                            मेटाउनुहोस् (Delete)
+                        <a href="{% url 'writing_delete' writing.slug %}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-xs font-medium theme-transition inline-flex items-center gap-1">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                            </svg>
+                            Delete
                         </a>
                     </div>
                 </div>
             </div>
-        </div>
+        </article>
         {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-12 theme-bg-card rounded theme-shadow">
-        <p class="theme-text-secondary text-lg mb-4">तपाईंले अहिलेसम्म कुनै रचना अपलोड गर्नुभएको छैन। (You haven't created any posts yet.)</p>
-        <a href="{% url 'writing_create' %}" class="inline-block theme-btn-lavender px-6 py-3 rounded-lg font-medium transition theme-shadow hover:theme-shadow-lg">
+    <!-- Empty State -->
+    <div class="text-center py-20 theme-bg-card rounded-2xl theme-shadow-xl border theme-border">
+        <div class="mb-6">
+            <svg class="w-24 h-24 mx-auto theme-text-muted opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+        </div>
+        <h3 class="text-3xl font-bold theme-text-primary mb-3">No Posts Yet</h3>
+        <p class="theme-text-secondary text-lg mb-8">
+            तपाईंले अहिलेसम्म कुनै रचना अपलोड गर्नुभएको छैन।
+        </p>
+        <a href="{% url 'writing_create' %}" class="inline-block theme-btn-primary px-8 py-4 rounded-lg font-semibold theme-shadow-lg">
             पहिलो रचना लेख्नुहोस् (Create Your First Post)
         </a>
     </div>
     {% endif %}
 </div>
 {% endblock %}
-

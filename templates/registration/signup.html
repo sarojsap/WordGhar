@@ -1,114 +1,129 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="flex justify-center items-center min-h-[70vh] py-8">
-    <div class="w-full max-w-lg theme-bg-card p-8 md:p-10 rounded-xl theme-shadow-lg theme-border border">
-        <div class="text-center mb-8">
-            <h2 class="text-3xl font-bold mb-2 theme-text-primary">नयाँ खाता खोल्नुहोस्</h2>
-            <p class="theme-text-secondary text-sm">Register New Account</p>
-        </div>
-        
-        <form method="post" class="space-y-5">
-            {% csrf_token %}
+<div class="flex justify-center items-center min-h-[75vh] py-12">
+    <div class="w-full max-w-2xl">
+        <!-- Card -->
+        <div class="theme-bg-card rounded-2xl theme-shadow-xl theme-border border overflow-hidden">
+            <!-- Header -->
+            <div class="p-8 md:p-10 text-center border-b theme-border theme-bg-hover">
+                <div class="w-16 h-16 mx-auto mb-4 rounded-full flex items-center justify-center" style="background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);">
+                    <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                    </svg>
+                </div>
+                <h2 class="text-3xl font-bold theme-text-primary mb-2">नयाँ खाता खोल्नुहोस्</h2>
+                <p class="theme-text-secondary text-sm">Join शब्दघर Community</p>
+            </div>
             
-            <!-- Username -->
-            <div>
-                <label for="{{ form.username.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
-                    Username
-                </label>
-                {{ form.username }}
-                {% if form.username.errors %}
-                    <div class="text-red-400 text-xs mt-1">{{ form.username.errors }}</div>
-                {% endif %}
-            </div>
+            <!-- Form -->
+            <form method="post" class="p-8 md:p-10">
+                {% csrf_token %}
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <!-- Username -->
+                    <div class="md:col-span-2">
+                        <label for="{{ form.username.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
+                            Username *
+                        </label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-red-400 text-xs mt-2">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
 
-            <!-- First Name -->
-            <div>
-                <label for="{{ form.first_name.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
-                    First Name (पहिलो नाम)
-                </label>
-                {{ form.first_name }}
-                {% if form.first_name.errors %}
-                    <div class="text-red-400 text-xs mt-1">{{ form.first_name.errors }}</div>
-                {% endif %}
-            </div>
+                    <!-- First Name -->
+                    <div>
+                        <label for="{{ form.first_name.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
+                            First Name (पहिलो नाम)
+                        </label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="text-red-400 text-xs mt-2">{{ form.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
 
-            <!-- Last Name -->
-            <div>
-                <label for="{{ form.last_name.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
-                    Last Name (अन्तिम नाम)
-                </label>
-                {{ form.last_name }}
-                {% if form.last_name.errors %}
-                    <div class="text-red-400 text-xs mt-1">{{ form.last_name.errors }}</div>
-                {% endif %}
-            </div>
+                    <!-- Last Name -->
+                    <div>
+                        <label for="{{ form.last_name.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
+                            Last Name (अन्तिम नाम)
+                        </label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="text-red-400 text-xs mt-2">{{ form.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
 
-            <!-- Date of Birth -->
-            <div>
-                <label for="{{ form.date_of_birth.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
-                    Date of Birth (जन्म मिति)
-                </label>
-                {{ form.date_of_birth }}
-                {% if form.date_of_birth.errors %}
-                    <div class="text-red-400 text-xs mt-1">{{ form.date_of_birth.errors }}</div>
-                {% endif %}
-            </div>
+                    <!-- Date of Birth -->
+                    <div class="md:col-span-2">
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
+                            Date of Birth (जन्म मिति) *
+                        </label>
+                        {{ form.date_of_birth }}
+                        {% if form.date_of_birth.errors %}
+                            <div class="text-red-400 text-xs mt-2">{{ form.date_of_birth.errors }}</div>
+                        {% endif %}
+                    </div>
 
-            <!-- Password -->
-            <div>
-                <label for="{{ form.password1.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
-                    Password
-                </label>
-                <div class="relative">
-                    {{ form.password1 }}
-                    <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 theme-text-secondary hover:text-gray-500 focus:outline-none" onclick="togglePasswordVisibility('{{ form.password1.id_for_label }}', this)">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </button>
+                    <!-- Password -->
+                    <div class="md:col-span-2">
+                        <label for="{{ form.password1.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
+                            Password *
+                        </label>
+                        <div class="relative">
+                            {{ form.password1 }}
+                            <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center theme-text-secondary hover:theme-text-primary focus:outline-none" onclick="togglePasswordVisibility('{{ form.password1.id_for_label }}', this)">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="text-red-400 text-xs mt-2">{{ form.password1.errors }}</div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="md:col-span-2">
+                        <label for="{{ form.password2.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
+                            Confirm Password *
+                        </label>
+                        <div class="relative">
+                            {{ form.password2 }}
+                            <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center theme-text-secondary hover:theme-text-primary focus:outline-none" onclick="togglePasswordVisibility('{{ form.password2.id_for_label }}', this)">
+                                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="text-red-400 text-xs mt-2">{{ form.password2.errors }}</div>
+                        {% endif %}
+                    </div>
                 </div>
-                {% if form.password1.errors %}
-                    <div class="text-red-400 text-xs mt-1">{{ form.password1.errors }}</div>
+
+                <!-- Form Errors -->
+                {% if form.non_field_errors %}
+                    <div class="bg-red-900 bg-opacity-30 border-l-4 border-red-500 p-4 rounded-lg mb-6">
+                        <p class="text-red-300 text-sm">{{ form.non_field_errors }}</p>
+                    </div>
                 {% endif %}
+
+                <button type="submit" class="w-full theme-btn-primary font-semibold py-3.5 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 theme-shadow hover:theme-shadow-lg">
+                    Sign Up
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="px-8 md:px-10 pb-8 md:pb-10 text-center border-t theme-border pt-6">
+                <p class="text-sm theme-text-secondary">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="theme-accent-primary hover:theme-accent-secondary font-semibold theme-transition">Login here</a>
+                </p>
             </div>
-
-            <!-- Confirm Password -->
-            <div>
-                <label for="{{ form.password2.id_for_label }}" class="block theme-text-primary text-sm font-semibold mb-2">
-                    Confirm Password
-                </label>
-                <div class="relative">
-                    {{ form.password2 }}
-                    <button type="button" class="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 theme-text-secondary hover:text-gray-500 focus:outline-none" onclick="togglePasswordVisibility('{{ form.password2.id_for_label }}', this)">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                        </svg>
-                    </button>
-                </div>
-                {% if form.password2.errors %}
-                    <div class="text-red-400 text-xs mt-1">{{ form.password2.errors }}</div>
-                {% endif %}
-            </div>
-
-            <!-- Form Errors -->
-            {% if form.non_field_errors %}
-                <div class="bg-red-900 bg-opacity-30 border-l-4 border-red-500 p-4 rounded">
-                    <p class="text-red-300 text-sm">{{ form.non_field_errors }}</p>
-                </div>
-            {% endif %}
-
-            <button type="submit" class="w-full theme-btn-lavender font-semibold py-3 px-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 focus:ring-offset-2 focus:ring-offset-transparent transition theme-shadow hover:theme-shadow-lg mt-6">
-                Sign Up
-            </button>
-        </form>
-
-        <p class="mt-6 text-center text-sm theme-text-secondary">
-            Already have an account? 
-            <a href="{% url 'login' %}" class="theme-accent-lavender hover:theme-accent-lavender-light font-semibold transition">Login here</a>
-        </p>
+        </div>
     </div>
 </div>
 

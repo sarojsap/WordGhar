@@ -1,64 +1,73 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10 mb-20">
+<div class="max-w-4xl mx-auto">
     
     <!-- Back Button -->
-    <a href="{% url 'writing_list' %}" class="inline-flex items-center theme-text-muted hover:theme-accent-lavender mb-6 transition-colors">
-        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-        गृहपृष्ठ (Home)
+    <a href="{% url 'writing_list' %}" class="inline-flex items-center theme-text-muted hover:theme-accent-primary mb-8 theme-transition group">
+        <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-1 theme-transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        गृहपृष्ठ (Back to Home)
     </a>
 
-    <article class="theme-bg-card p-8 md:p-12 rounded-lg theme-shadow theme-border border">
-        <!-- Header -->
-        <header class="mb-8 border-b theme-border pb-8">
-            <div class="flex items-center space-x-2 mb-4 flex-wrap gap-2">
+    <!-- Main Article Card -->
+    <article class="theme-bg-card rounded-2xl theme-shadow-xl theme-border border overflow-hidden">
+        <!-- Article Header -->
+        <header class="p-8 md:p-12 border-b theme-border">
+            <!-- Meta Information -->
+            <div class="flex flex-wrap items-center gap-3 mb-6">
                 {% if writing.category == 'poem' %}
-                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(246, 173, 85, 0.2); color: var(--accent-peach);">कविता</span>
+                    <span class="px-4 py-1.5 rounded-full text-sm font-semibold" style="background-color: rgba(139, 92, 246, 0.15); color: var(--accent-secondary);">
+                        📝 कविता
+                    </span>
                 {% else %}
-                    <span class="text-xs font-semibold px-2.5 py-0.5 rounded" style="background-color: rgba(183, 148, 246, 0.2); color: var(--accent-lavender);">कथा</span>
+                    <span class="px-4 py-1.5 rounded-full text-sm font-semibold" style="background-color: rgba(99, 102, 241, 0.15); color: var(--accent-primary);">
+                        📖 कथा
+                    </span>
                 {% endif %}
-                <span class="text-xs font-semibold px-2.5 py-0.5 rounded theme-bg-secondary theme-text-secondary">
+                <span class="px-4 py-1.5 rounded-full text-sm font-medium theme-bg-hover theme-text-secondary">
                     {{ writing.get_content_category_display }}
                 </span>
                 <span class="theme-text-muted text-sm">•</span>
                 <span class="theme-text-muted text-sm">{{ writing.created_at|date:"F d, Y" }}</span>
             </div>
 
-            <h1 class="text-4xl md:text-5xl font-bold theme-text-primary mb-4 leading-tight">
+            <!-- Title -->
+            <h1 class="text-4xl md:text-5xl font-bold theme-text-primary mb-8 leading-tight">
                 {{ writing.title }}
             </h1>
 
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <a href="{% url 'author_profile' writing.author.username %}" class="flex items-center hover:opacity-80 transition">
-                        {% if writing.author.profile_photo %}
-                            <img src="{{ writing.author.profile_photo.url }}" alt="{{ writing.author.username }}" 
-                                 class="w-10 h-10 rounded-full object-cover border-2 theme-border mr-3">
-                        {% else %}
-                            <div class="w-10 h-10 rounded-full theme-bg-secondary flex items-center justify-center theme-accent-lavender font-bold text-xl mr-3 border-2 theme-border">
-                                {{ writing.author.username|first|upper }}
-                            </div>
-                        {% endif %}
-                        <div>
-                            <p class="text-sm font-semibold theme-text-primary">
-                                {{ writing.author.get_full_name|default:writing.author.username }}
-                            </p>
-                            <p class="text-xs theme-text-muted">Author</p>
+            <!-- Author & Actions -->
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <!-- Author Info -->
+                <a href="{% url 'author_profile' writing.author.username %}" class="flex items-center hover:opacity-80 theme-transition group">
+                    {% if writing.author.profile_photo %}
+                        <img src="{{ writing.author.profile_photo.url }}" alt="{{ writing.author.username }}" 
+                             class="w-14 h-14 rounded-full object-cover border-3 theme-border mr-4 ring-2 ring-transparent group-hover:ring-indigo-500 theme-transition">
+                    {% else %}
+                        <div class="w-14 h-14 rounded-full theme-bg-hover flex items-center justify-center theme-accent-primary font-bold text-xl mr-4 border-3 theme-border">
+                            {{ writing.author.username|first|upper }}
                         </div>
-                    </a>
-                </div>
+                    {% endif %}
+                    <div>
+                        <p class="text-base font-bold theme-text-primary">
+                            {{ writing.author.get_full_name|default:writing.author.username }}
+                        </p>
+                        <p class="text-sm theme-text-muted">लेखक (Author)</p>
+                    </div>
+                </a>
                 
-                <!-- Edit/Delete buttons (only for post owner) -->
+                <!-- Edit/Delete Actions -->
                 {% if user.is_authenticated and user == writing.author %}
                 <div class="flex gap-3">
                     <a href="{% url 'writing_update' writing.slug %}" 
-                       class="theme-btn-lavender px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
-                        सम्पादन (Edit)
+                       class="theme-btn-secondary px-5 py-2.5 rounded-lg text-sm font-medium theme-shadow-sm hover:theme-shadow">
+                        ✏️ सम्पादन
                     </a>
                     <a href="{% url 'writing_delete' writing.slug %}" 
-                       class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
-                        मेटाउनुहोस् (Delete)
+                       class="bg-red-600 hover:bg-red-700 text-white px-5 py-2.5 rounded-lg text-sm font-medium theme-transition theme-shadow-sm hover:theme-shadow">
+                        🗑️ मेटाउनुहोस्
                     </a>
                 </div>
                 {% endif %}
@@ -67,17 +76,18 @@
 
         <!-- AI Summary Section -->
         {% if writing.summary %}
-        <div class="theme-bg-secondary border-l-4 p-4 mb-8 rounded-r" style="border-left-color: var(--accent-lavender);">
-            <div class="flex items-start">
+        <div class="p-8 md:p-12 theme-bg-hover border-b theme-border">
+            <div class="flex items-start gap-4">
                 <div class="flex-shrink-0">
-                    <!-- Robot Icon -->
-                    <svg class="h-5 w-5 theme-accent-lavender mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                    </svg>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background-color: rgba(99, 102, 241, 0.15);">
+                        <svg class="h-5 w-5 theme-accent-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                    </div>
                 </div>
-                <div class="ml-3">
-                    <h3 class="text-sm font-medium theme-accent-lavender">AI Summary (सारांश)</h3>
-                    <div class="mt-1 text-sm theme-text-secondary">
+                <div class="flex-1">
+                    <h3 class="text-sm font-bold theme-accent-primary mb-2">AI Summary (सारांश)</h3>
+                    <div class="text-sm theme-text-secondary leading-relaxed">
                         {{ writing.summary|linebreaks }}
                     </div>
                 </div>
@@ -86,104 +96,110 @@
         {% endif %}
 
         <!-- Main Content -->
-        <!-- 'linebreaks' filter is essential for preserving poetry stanzas and paragraphs -->
-        <div class="prose prose-lg max-w-none theme-text-primary leading-loose" style="color: var(--text-primary);">
-            <div class="theme-text-secondary whitespace-pre-line">{{ writing.content|linebreaks }}</div>
+        <div class="p-8 md:p-12">
+            <div class="prose prose-lg max-w-none theme-text-primary" style="color: var(--text-primary);">
+                <div class="theme-text-secondary whitespace-pre-line text-lg leading-loose">
+                    {{ writing.content|linebreaks }}
+                </div>
+            </div>
         </div>
 
-        <!-- Like and Comment Section -->
-        <div class="mt-8 pt-8 border-t theme-border">
+        <!-- Engagement Section (Like & Comments) -->
+        <div class="p-8 md:p-12 border-t theme-border theme-bg-hover">
             <!-- Like Button -->
-            <div class="mb-6">
+            <div class="mb-8">
                 {% if user.is_authenticated %}
                     <form method="post" action="{% url 'toggle_like' writing.slug %}" class="inline" id="like-form">
                         {% csrf_token %}
-                        <button type="submit" class="flex items-center space-x-2 theme-text-secondary hover:theme-accent-lavender transition-colors" id="like-button">
-                            <svg id="like-icon" class="w-6 h-6 {% if is_liked %}fill-current text-red-500{% else %}stroke-current{% endif %}" 
+                        <button type="submit" class="flex items-center space-x-3 px-6 py-3 rounded-xl theme-bg-card hover:theme-bg-primary theme-transition group border theme-border" id="like-button">
+                            <svg id="like-icon" class="w-6 h-6 {% if is_liked %}fill-current text-red-500{% else %}stroke-current theme-text-secondary{% endif %}" 
                                  fill="{% if is_liked %}currentColor{% else %}none{% endif %}" 
                                  stroke="{% if is_liked %}none{% else %}currentColor{% endif %}" 
                                  viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                             </svg>
-                            <span id="like-count" class="font-semibold">{{ like_count }}</span>
-                            <span class="theme-text-muted">मन पराउनुहोस् (Like)</span>
+                            <span id="like-count" class="font-bold theme-text-primary text-lg">{{ like_count }}</span>
+                            <span class="theme-text-muted text-sm font-medium">मन पराउनुहोस्</span>
                         </button>
                     </form>
                 {% else %}
-                    <div class="flex items-center space-x-2 theme-text-secondary">
-                        <svg class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24">
+                    <div class="flex items-center space-x-3 px-6 py-3 rounded-xl theme-bg-card border theme-border inline-flex">
+                        <svg class="w-6 h-6 stroke-current theme-text-secondary" fill="none" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                         </svg>
-                        <span class="font-semibold">{{ like_count }}</span>
-                        <span class="theme-text-muted">मन पराउनुहोस् (Like)</span>
+                        <span class="font-bold theme-text-primary text-lg">{{ like_count }}</span>
+                        <span class="theme-text-muted text-sm font-medium">मन पराउनुहोस्</span>
                     </div>
                 {% endif %}
             </div>
 
             <!-- Comments Section -->
-            <div class="mt-8">
-                <h3 class="text-xl font-bold theme-text-primary mb-4">
-                    टिप्पणीहरू (Comments) 
-                    <span class="text-sm font-normal theme-text-muted">({{ comments.count }})</span>
+            <div>
+                <h3 class="text-2xl font-bold theme-text-primary mb-6 flex items-center gap-3">
+                    टिप्पणीहरू (Comments)
+                    <span class="text-lg font-normal theme-text-muted">({{ comments.count }})</span>
                 </h3>
 
                 <!-- Add Comment Form -->
                 {% if user.is_authenticated %}
-                    <form method="post" action="{% url 'add_comment' writing.slug %}" class="mb-6">
+                    <form method="post" action="{% url 'add_comment' writing.slug %}" class="mb-8">
                         {% csrf_token %}
-                        <div class="flex flex-col space-y-2">
-                            <textarea name="content" rows="3" 
-                                      class="w-full px-4 py-3 theme-bg-secondary theme-border theme-text-primary border rounded-lg focus:outline-none focus:ring-2 focus:ring-lavender-500 transition resize-none"
+                        <div class="space-y-3">
+                            <textarea name="content" rows="4" 
+                                      class="w-full px-4 py-3 theme-bg-card theme-border theme-text-primary border rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 theme-transition resize-none"
+                                      style="background-color: var(--bg-card); color: var(--text-primary); border-color: var(--border-color);"
                                       placeholder="आफ्नो टिप्पणी लेख्नुहोस्... (Write your comment...)" 
                                       required></textarea>
-                            <button type="submit" class="self-end theme-btn-lavender px-6 py-2 rounded-lg text-sm font-medium transition theme-shadow">
+                            <button type="submit" class="theme-btn-primary px-6 py-3 rounded-lg font-medium theme-shadow">
                                 टिप्पणी थप्नुहोस् (Post Comment)
                             </button>
                         </div>
                     </form>
                 {% else %}
-                    <p class="theme-text-muted mb-4">
-                        <a href="{% url 'login' %}" class="theme-accent-lavender hover:underline">Login</a> to add a comment.
-                    </p>
+                    <div class="mb-8 p-6 theme-bg-card border theme-border rounded-xl text-center">
+                        <p class="theme-text-muted mb-3">
+                            Please <a href="{% url 'login' %}" class="theme-accent-primary hover:underline font-semibold">login</a> to add a comment.
+                        </p>
+                    </div>
                 {% endif %}
 
                 <!-- Comments List -->
                 <div class="space-y-4">
                     {% for comment in comments %}
-                        <div class="theme-bg-secondary p-4 rounded-lg theme-border border">
-                            <div class="flex items-start justify-between">
-                                <div class="flex items-start space-x-3 flex-1">
+                        <div class="theme-bg-card p-6 rounded-xl theme-border border">
+                            <div class="flex items-start justify-between gap-4">
+                                <div class="flex items-start space-x-4 flex-1">
                                     <!-- Commenter Profile Photo -->
                                     <div class="flex-shrink-0">
                                         {% if comment.user.profile_photo %}
                                             <img src="{{ comment.user.profile_photo.url }}" alt="{{ comment.user.username }}" 
-                                                 class="w-8 h-8 rounded-full object-cover border-2 theme-border">
+                                                 class="w-10 h-10 rounded-full object-cover border-2 theme-border">
                                         {% else %}
-                                            <div class="w-8 h-8 rounded-full theme-bg-card flex items-center justify-center theme-accent-lavender font-bold text-sm border-2 theme-border">
+                                            <div class="w-10 h-10 rounded-full theme-bg-hover flex items-center justify-center theme-accent-primary font-bold text-sm border-2 theme-border">
                                                 {{ comment.user.username|first|upper }}
                                             </div>
                                         {% endif %}
                                     </div>
                                     
                                     <!-- Comment Content -->
-                                    <div class="flex-1">
-                                        <div class="flex items-center space-x-2 mb-1">
-                                            <a href="{% url 'author_profile' comment.user.username %}" class="font-semibold theme-text-primary hover:theme-accent-lavender transition">
+                                    <div class="flex-1 min-w-0">
+                                        <div class="flex items-center space-x-2 mb-2">
+                                            <a href="{% url 'author_profile' comment.user.username %}" class="font-bold theme-text-primary hover:theme-accent-primary theme-transition text-sm">
                                                 {{ comment.user.get_full_name|default:comment.user.username }}
                                             </a>
                                             <span class="theme-text-muted text-xs">•</span>
                                             <span class="theme-text-muted text-xs">{{ comment.created_at|timesince }} ago</span>
                                         </div>
-                                        <p class="theme-text-secondary whitespace-pre-line">{{ comment.content|linebreaks }}</p>
+                                        <p class="theme-text-secondary whitespace-pre-line leading-relaxed">{{ comment.content|linebreaks }}</p>
                                     </div>
                                 </div>
                                 
-                                <!-- Delete Comment Button (only for comment author or post author) -->
+                                <!-- Delete Comment Button -->
                                 {% if user == comment.user or user == writing.author %}
-                                    <form method="post" action="{% url 'delete_comment' comment.id %}" class="ml-2">
+                                    <form method="post" action="{% url 'delete_comment' comment.id %}">
                                         {% csrf_token %}
                                         <button type="submit" 
-                                                class="text-red-400 hover:text-red-500 transition p-1"
+                                                class="text-red-400 hover:text-red-500 theme-transition p-2 rounded-lg hover:bg-red-500 hover:bg-opacity-10"
                                                 onclick="return confirm('Are you sure you want to delete this comment?');">
                                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -194,7 +210,12 @@
                             </div>
                         </div>
                     {% empty %}
-                        <p class="theme-text-muted text-center py-8">No comments yet. Be the first to comment!</p>
+                        <div class="text-center py-12 theme-bg-card rounded-xl border theme-border">
+                            <svg class="w-16 h-16 mx-auto theme-text-muted opacity-50 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                            </svg>
+                            <p class="theme-text-muted text-lg">No comments yet. Be the first to comment!</p>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
@@ -228,12 +249,12 @@
                     likeCount.textContent = data.like_count;
                     if (data.is_liked) {
                         likeIcon.classList.add('fill-current', 'text-red-500');
-                        likeIcon.classList.remove('stroke-current');
+                        likeIcon.classList.remove('stroke-current', 'theme-text-secondary');
                         likeIcon.setAttribute('fill', 'currentColor');
                         likeIcon.setAttribute('stroke', 'none');
                     } else {
                         likeIcon.classList.remove('fill-current', 'text-red-500');
-                        likeIcon.classList.add('stroke-current');
+                        likeIcon.classList.add('stroke-current', 'theme-text-secondary');
                         likeIcon.setAttribute('fill', 'none');
                         likeIcon.setAttribute('stroke', 'currentColor');
                     }

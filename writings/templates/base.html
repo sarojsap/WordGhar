@@ -1,182 +1,265 @@
 <!DOCTYPE html>
-<html lang="ne" id="html-root"> <!-- Language set to Nepali -->
+<html lang="ne" id="html-root">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="google" content="notranslate">
-    <title>Nepali Sahitya</title>
+    <title>शब्दघर - Nepali Literary Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts for Nepali -->
-    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;700&display=swap" rel="stylesheet">
+    <!-- Enhanced Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Dark Mode (Default) - Deep Navy Theme */
-            --bg-primary: #0a1929;
-            --bg-secondary: #132f4c;
-            --bg-card: #1a3a5c;
-            --text-primary: #ffffff;
-            --text-secondary: #b8c5d6;
-            --text-muted: #8b9dc3;
-            --accent-lavender: #b794f6;
-            --accent-peach: #f6ad55;
-            --accent-lavender-light: #c4b5fd;
-            --accent-peach-light: #fbbf24;
-            --border-color: #1e3a5f;
-            --shadow-color: rgba(0, 0, 0, 0.3);
+            /* Modern Dark Theme */
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-card: #1e293b;
+            --bg-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --accent-primary: #6366f1;
+            --accent-primary-hover: #818cf8;
+            --accent-secondary: #8b5cf6;
+            --accent-secondary-hover: #a78bfa;
+            --border-color: #334155;
+            --border-light: #475569;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
         }
 
         [data-theme="light"] {
-            /* Light Mode */
+            /* Modern Light Theme */
             --bg-primary: #f8fafc;
             --bg-secondary: #ffffff;
             --bg-card: #ffffff;
-            --text-primary: #1e293b;
+            --bg-hover: #f1f5f9;
+            --text-primary: #0f172a;
             --text-secondary: #475569;
             --text-muted: #64748b;
-            --accent-lavender: #8b5cf6;
-            --accent-peach: #f59e0b;
-            --accent-lavender-light: #a78bfa;
-            --accent-peach-light: #fbbf24;
+            --accent-primary: #4f46e5;
+            --accent-primary-hover: #6366f1;
+            --accent-secondary: #7c3aed;
+            --accent-secondary-hover: #8b5cf6;
             --border-color: #e2e8f0;
-            --shadow-color: rgba(0, 0, 0, 0.1);
+            --border-light: #cbd5e1;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         body {
-            font-family: 'Mukta', sans-serif;
+            font-family: 'Noto Sans Devanagari', 'Mukta', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1.7;
+            letter-spacing: 0.01em;
         }
 
+        /* Theme Classes */
         .theme-bg-primary { background-color: var(--bg-primary); }
         .theme-bg-secondary { background-color: var(--bg-secondary); }
         .theme-bg-card { background-color: var(--bg-card); }
+        .theme-bg-hover { background-color: var(--bg-hover); }
         .theme-text-primary { color: var(--text-primary); }
         .theme-text-secondary { color: var(--text-secondary); }
         .theme-text-muted { color: var(--text-muted); }
         .theme-border { border-color: var(--border-color); }
-        .theme-accent-lavender { color: var(--accent-lavender); }
-        .theme-accent-peach { color: var(--accent-peach); }
-        .theme-btn-lavender { 
-            background-color: var(--accent-lavender);
+        .theme-border-light { border-color: var(--border-light); }
+        
+        /* Enhanced Button Styles */
+        .theme-btn-primary { 
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
             color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .theme-btn-lavender:hover { 
-            background-color: var(--accent-lavender-light);
+        .theme-btn-primary:hover { 
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
+            opacity: 0.95;
         }
-        .theme-btn-peach { 
-            background-color: var(--accent-peach);
+        .theme-btn-secondary { 
+            background-color: var(--accent-secondary);
             color: white;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .theme-btn-peach:hover { 
-            background-color: var(--accent-peach-light);
+        .theme-btn-secondary:hover { 
+            background-color: var(--accent-secondary-hover);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-lg);
         }
-        .theme-shadow { box-shadow: 0 4px 6px var(--shadow-color); }
-        .theme-shadow-lg { box-shadow: 0 10px 15px var(--shadow-color); }
+        
+        /* Enhanced Shadow System */
+        .theme-shadow-sm { box-shadow: var(--shadow-sm); }
+        .theme-shadow { box-shadow: var(--shadow-md); }
+        .theme-shadow-lg { box-shadow: var(--shadow-lg); }
+        .theme-shadow-xl { box-shadow: var(--shadow-xl); }
+        
+        /* Smooth Transitions */
+        .theme-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Accent Colors */
+        .theme-accent-primary { color: var(--accent-primary); }
+        .theme-accent-secondary { color: var(--accent-secondary); }
+        
+        /* Gradient Text */
+        .theme-gradient-text {
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
     </style>
 </head>
 <body class="theme-bg-primary theme-text-primary min-h-screen">
-    <nav class="theme-bg-secondary theme-shadow mb-8 border-b theme-border sticky top-0 z-50 backdrop-blur-sm bg-opacity-90">
-    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-        <!-- Logo -->
-        <a href="/" class="text-2xl font-bold theme-accent-lavender flex items-center hover:opacity-80 transition">
-            <span class="mr-2">📚</span> शब्द संसार 
-        </a>
-
-        <!-- Menu -->
-        <div class="flex items-center space-x-4">
-            <!-- Theme Toggle -->
-            <button id="theme-toggle" class="p-2 rounded-lg theme-bg-card hover:opacity-80 transition theme-text-primary" aria-label="Toggle theme">
-                <svg id="theme-icon-dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                </svg>
-                <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                </svg>
-            </button>
-
-            {% if user.is_authenticated %}
-                <!-- Logged In State -->
-                <div class="flex items-center space-x-3">
-                    <!-- Profile Photo or Initial -->
-                    <a href="{% url 'profile' user.username %}" class="flex items-center space-x-2 hover:opacity-80 transition">
-                        {% if user.profile_photo %}
-                            <img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" 
-                                 class="w-8 h-8 rounded-full object-cover border-2 theme-border">
-                        {% else %}
-                            <div class="w-8 h-8 rounded-full theme-bg-card flex items-center justify-center theme-accent-lavender font-bold text-sm border-2 theme-border">
-                                {{ user.username|first|upper }}
-                            </div>
-                        {% endif %}
-                        <span class="theme-text-secondary hidden md:inline">Namaste, <b class="theme-text-primary">{{ user.username }}</b></span>
-                    </a>
-                </div>
-                
-                <a href="{% url 'writing_create' %}" class="theme-btn-lavender px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
-                    + लेख्नुहोस् (Write)
+    <!-- Enhanced Navigation -->
+    <nav class="theme-bg-secondary border-b theme-border sticky top-0 z-50 backdrop-blur-md bg-opacity-95 theme-shadow-md">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <a href="/" class="flex items-center space-x-3 group">
+                    <span class="text-2xl filter grayscale-0 group-hover:scale-110 transition-transform duration-300">📚</span>
+                    <span class="text-xl sm:text-2xl font-bold theme-gradient-text">शब्दघर</span>
                 </a>
 
-                <!-- Logout Form (Required for Django 5) -->
-                <form action="{% url 'logout' %}" method="post" class="inline">
-                    {% csrf_token %}
-                    <button type="submit" class="theme-text-muted hover:theme-accent-peach text-sm font-medium ml-2 transition">
-                        Logout
+                <!-- Desktop Menu -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <!-- Theme Toggle -->
+                    <button id="theme-toggle" class="p-2.5 rounded-lg theme-bg-hover hover:theme-bg-card theme-transition theme-text-primary" aria-label="Toggle theme">
+                        <svg id="theme-icon-dark" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                        <svg id="theme-icon-light" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
                     </button>
-                </form>
-            {% else %}
-                <!-- Guest State -->
-                <a href="{% url 'login' %}" class="theme-text-secondary hover:theme-accent-lavender font-medium transition">Login</a>
-                <a href="{% url 'signup' %}" class="theme-btn-peach px-4 py-2 rounded-lg text-sm font-medium transition theme-shadow">
-                    Register
-                </a>
-            {% endif %}
-        </div>
-    </div>
-</nav>
 
-    <main class="container mx-auto px-4 pb-8">
+                    {% if user.is_authenticated %}
+                        <!-- Profile Link -->
+                        <a href="{% url 'profile' user.username %}" class="flex items-center space-x-2 px-3 py-2 rounded-lg hover:theme-bg-hover theme-transition">
+                            {% if user.profile_photo %}
+                                <img src="{{ user.profile_photo.url }}" alt="{{ user.username }}" 
+                                     class="w-8 h-8 rounded-full object-cover border-2 theme-border ring-2 ring-transparent hover:ring-indigo-500 theme-transition">
+                            {% else %}
+                                <div class="w-8 h-8 rounded-full theme-bg-card flex items-center justify-center theme-accent-primary font-semibold text-sm border-2 theme-border">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                            <span class="theme-text-secondary text-sm font-medium">{{ user.username }}</span>
+                        </a>
+                        
+                        <!-- Write Button -->
+                        <a href="{% url 'writing_create' %}" class="theme-btn-primary px-4 py-2 rounded-lg text-sm font-medium theme-shadow">
+                            <span class="hidden lg:inline">+ लेख्नुहोस्</span>
+                            <span class="lg:hidden">+ Write</span>
+                        </a>
+
+                        <!-- Logout Button -->
+                        <form action="{% url 'logout' %}" method="post" class="inline">
+                            {% csrf_token %}
+                            <button type="submit" class="theme-text-muted hover:theme-accent-primary text-sm font-medium px-3 py-2 rounded-lg hover:theme-bg-hover theme-transition">
+                                Logout
+                            </button>
+                        </form>
+                    {% else %}
+                        <!-- Guest State -->
+                        <a href="{% url 'login' %}" class="theme-text-secondary hover:theme-accent-primary font-medium px-3 py-2 rounded-lg hover:theme-bg-hover theme-transition">Login</a>
+                        <a href="{% url 'signup' %}" class="theme-btn-primary px-5 py-2 rounded-lg text-sm font-medium theme-shadow">
+                            Register
+                        </a>
+                    {% endif %}
+                </div>
+
+                <!-- Mobile Menu Button (hidden for now, can add hamburger menu if needed) -->
+                <div class="md:hidden flex items-center space-x-2">
+                    <button id="theme-toggle-mobile" class="p-2 rounded-lg theme-bg-hover theme-transition theme-text-primary">
+                        <svg id="theme-icon-dark-mobile" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                        </svg>
+                        <svg id="theme-icon-light-mobile" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                        </svg>
+                    </button>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'writing_create' %}" class="theme-btn-primary px-3 py-2 rounded-lg text-sm font-medium">
+                            + Write
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% block content %}
         {% endblock %}
     </main>
 
+    <!-- Footer -->
+    <footer class="theme-bg-secondary border-t theme-border mt-20 py-8">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <p class="text-center theme-text-muted text-sm">
+                © 2024 शब्दघर - Nepali Literary Platform. सबै अधिकार सुरक्षित।
+            </p>
+        </div>
+    </footer>
+
     <script>
-        // Theme Toggle Functionality
+        // Enhanced Theme Toggle with Mobile Support
         (function() {
             const themeToggle = document.getElementById('theme-toggle');
+            const themeToggleMobile = document.getElementById('theme-toggle-mobile');
             const themeIconDark = document.getElementById('theme-icon-dark');
             const themeIconLight = document.getElementById('theme-icon-light');
+            const themeIconDarkMobile = document.getElementById('theme-icon-dark-mobile');
+            const themeIconLightMobile = document.getElementById('theme-icon-light-mobile');
             const htmlRoot = document.getElementById('html-root');
             
             // Get saved theme or default to dark
             const currentTheme = localStorage.getItem('theme') || 'dark';
             
             // Apply theme on load
-            if (currentTheme === 'light') {
-                htmlRoot.setAttribute('data-theme', 'light');
-                themeIconDark.classList.add('hidden');
-                themeIconLight.classList.remove('hidden');
-            } else {
-                htmlRoot.setAttribute('data-theme', 'dark');
-                themeIconDark.classList.remove('hidden');
-                themeIconLight.classList.add('hidden');
-            }
-            
-            // Toggle theme on button click
-            themeToggle.addEventListener('click', function() {
-                const currentTheme = htmlRoot.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                
-                htmlRoot.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                
-                if (newTheme === 'light') {
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    htmlRoot.setAttribute('data-theme', 'light');
                     themeIconDark.classList.add('hidden');
                     themeIconLight.classList.remove('hidden');
+                    themeIconDarkMobile.classList.add('hidden');
+                    themeIconLightMobile.classList.remove('hidden');
                 } else {
+                    htmlRoot.setAttribute('data-theme', 'dark');
                     themeIconDark.classList.remove('hidden');
                     themeIconLight.classList.add('hidden');
+                    themeIconDarkMobile.classList.remove('hidden');
+                    themeIconLightMobile.classList.add('hidden');
                 }
-            });
+            }
+            
+            applyTheme(currentTheme);
+            
+            // Toggle theme function
+            function toggleTheme() {
+                const currentTheme = htmlRoot.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                localStorage.setItem('theme', newTheme);
+                applyTheme(newTheme);
+            }
+            
+            // Add event listeners
+            themeToggle.addEventListener('click', toggleTheme);
+            themeToggleMobile.addEventListener('click', toggleTheme);
         })();
     </script>
 </body>

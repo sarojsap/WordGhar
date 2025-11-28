@@ -1,44 +1,83 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="max-w-2xl mx-auto theme-bg-card p-8 rounded-lg theme-shadow theme-border border">
-    <h2 class="text-2xl font-bold mb-6 theme-text-primary border-b theme-border pb-2">
-        {% if writing %}
-            रचना सम्पादन गर्नुहोस् (Edit Post)
-        {% else %}
-            नयाँ रचना पोस्ट गर्नुहोस् (New Post)
-        {% endif %}
-    </h2>
-
-    <form method="post">
-        {% csrf_token %}
-        
-        <div class="mb-4">
-            <label class="block theme-text-primary font-bold mb-2">शीर्षक (Title)</label>
-            {{ form.title }}
+<div class="max-w-3xl mx-auto">
+    <div class="theme-bg-card rounded-2xl theme-shadow-xl theme-border border overflow-hidden">
+        <!-- Header -->
+        <div class="p-8 md:p-10 border-b theme-border theme-bg-hover">
+            <h2 class="text-3xl font-bold theme-text-primary mb-2">
+                {% if writing %}
+                    रचना सम्पादन गर्नुहोस्
+                {% else %}
+                    नयाँ रचना पोस्ट गर्नुहोस्
+                {% endif %}
+            </h2>
+            <p class="theme-text-secondary text-sm">
+                {% if writing %}
+                    Edit Your Post
+                {% else %}
+                    Create a New Literary Work
+                {% endif %}
+            </p>
         </div>
 
-        <div class="mb-4">
-            <label class="block theme-text-primary font-bold mb-2">प्रकार (Type)</label>
-            {{ form.category }}
-            <p class="text-sm theme-text-muted mt-1">कविता वा कथा छान्नुहोस् (Choose Poem or Story)</p>
-        </div>
+        <!-- Form -->
+        <form method="post" class="p-8 md:p-10 space-y-8">
+            {% csrf_token %}
+            
+            <!-- Title -->
+            <div>
+                <label class="block theme-text-primary font-semibold text-sm mb-3">
+                    शीर्षक (Title) *
+                </label>
+                {{ form.title }}
+            </div>
 
-        <div class="mb-4">
-            <label class="block theme-text-primary font-bold mb-2">विषय श्रेणी (Content Category)</label>
-            {{ form.content_category }}
-            <p class="text-sm theme-text-muted mt-1">रचनाको विषय श्रेणी छान्नुहोस् (Choose the content category)</p>
-        </div>
+            <!-- Category and Content Category Row -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Category -->
+                <div>
+                    <label class="block theme-text-primary font-semibold text-sm mb-3">
+                        प्रकार (Type) *
+                    </label>
+                    {{ form.category }}
+                    <p class="text-xs theme-text-muted mt-2">कविता वा कथा छान्नुहोस्</p>
+                </div>
 
-        <div class="mb-6">
-            <label class="block theme-text-primary font-bold mb-2">रचना (Content)</label>
-            {{ form.content }}
-            <p class="text-sm theme-text-muted mt-1">तपाईं यहाँ नेपालीमा टाइप गर्न सक्नुहुन्छ (You can type in Nepali here).</p>
-        </div>
+                <!-- Content Category -->
+                <div>
+                    <label class="block theme-text-primary font-semibold text-sm mb-3">
+                        विषय श्रेणी (Content Category) *
+                    </label>
+                    {{ form.content_category }}
+                    <p class="text-xs theme-text-muted mt-2">रचनाको विषय श्रेणी छान्नुहोस्</p>
+                </div>
+            </div>
 
-        <button type="submit" class="w-full theme-btn-lavender font-bold py-3 px-4 rounded-lg transition theme-shadow hover:theme-shadow-lg">
-            पोस्ट गर्नुहोस् (Publish)
-        </button>
-    </form>
+            <!-- Content -->
+            <div>
+                <label class="block theme-text-primary font-semibold text-sm mb-3">
+                    रचना (Content) *
+                </label>
+                {{ form.content }}
+                <p class="text-xs theme-text-muted mt-2">
+                    तपाईं यहाँ नेपालीमा टाइप गर्न सक्नुहुन्छ (You can type in Nepali here).
+                </p>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="flex gap-4 pt-6 border-t theme-border">
+                <button type="submit" class="theme-btn-primary px-8 py-3.5 rounded-lg font-semibold theme-shadow hover:theme-shadow-lg flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    पोस्ट गर्नुहोस् (Publish)
+                </button>
+                <a href="{% url 'writing_list' %}" class="theme-bg-hover hover:theme-bg-card theme-text-primary px-8 py-3.5 rounded-lg font-medium theme-transition theme-border border">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
